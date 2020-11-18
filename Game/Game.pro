@@ -6,7 +6,10 @@ QT += core gui widgets network multimedia
 CONFIG += c++14
 
 SOURCES += \
-    main.cc
+    errorbox.cpp \
+    main.cc \
+    mainwindow.cpp \
+    startupwindow.cpp
 
 win32:CONFIG(release, debug|release): LIBS += \
     -L$$OUT_PWD/../Course/CourseLib/release/ -lCourseLib
@@ -31,3 +34,13 @@ else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += \
     $$OUT_PWD/../Course/CourseLib/debug/CourseLib.lib
 else:unix: PRE_TARGETDEPS += \
     $$OUT_PWD/../Course/CourseLib/libCourseLib.a
+
+FORMS += \
+    errorbox.ui \
+    mainwindow.ui \
+    startupwindow.ui
+
+HEADERS += \
+    errorbox.h \
+    mainwindow.h \
+    startupwindow.h
