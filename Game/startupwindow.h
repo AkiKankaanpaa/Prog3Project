@@ -16,6 +16,9 @@ public:
     explicit StartupWindow(QWidget *parent = nullptr);
     ~StartupWindow();
 
+signals:
+    void difficulty_signal(int difficulty);
+
 private slots:
     void on_startButton_clicked();
 

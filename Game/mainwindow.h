@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
+#include <QGraphicsScene>
 #include "startupwindow.h"
 
 namespace Ui {
@@ -16,9 +18,15 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void create_game();
+
 private:
     Ui::MainWindow *ui;
     StartupWindow *startup_;
+    QGraphicsScene *scene_;
 };
+
+
 
 #endif // MAINWINDOW_H

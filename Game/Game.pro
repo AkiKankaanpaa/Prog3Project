@@ -44,3 +44,8 @@ HEADERS += \
     errorbox.h \
     mainwindow.h \
     startupwindow.h
+
+DISTFILES +=
+
+RESOURCES += \
+    images.qrc

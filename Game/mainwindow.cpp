@@ -6,12 +6,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setFixedSize(QSize(500, 500));
+    QPixmap pix(":/images/kartta.png");
+    ui->backgroundLabel->setPixmap(pix);
     startup_ = new StartupWindow(this);
     startup_->show();
     connect(startup_, &StartupWindow::rejected, this, &MainWindow::close);
+    connect(startup_, &StartupWindow::difficulty_signal, this, &MainWindow::create_game);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::create_game()
+{
+    ;
 }
