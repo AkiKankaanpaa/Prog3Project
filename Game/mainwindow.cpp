@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setFixedSize(QSize(500, 500));
+//    this->setFixedSize(QSize(500, 500));
     QPixmap pix(":/images/kartta.png");
 //    ui->backgroundLabel->setPixmap(pix);
     scene_ = new QGraphicsScene(this);
@@ -30,5 +30,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::create_game()
 {
-    ;
+    erection_ = scene_->addRect(0,0,10,10);
+    bus_ = new PlayerBus(erection_);
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    bus_->move(0);
 }

@@ -9,6 +9,7 @@ SOURCES += \
     errorbox.cpp \
     main.cc \
     mainwindow.cpp \
+    playerbus.cpp \
     startupwindow.cpp
 
 win32:CONFIG(release, debug|release): LIBS += \
@@ -43,6 +44,7 @@ FORMS += \
 HEADERS += \
     errorbox.h \
     mainwindow.h \
+    playerbus.h \
     startupwindow.h
 
 DISTFILES +=

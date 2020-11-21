@@ -6,6 +6,8 @@
 #include <QGraphicsScene>
 #include "startupwindow.h"
 #include <QImage>
+#include <QGraphicsRectItem>
+#include "playerbus.h"
 
 
 namespace Ui {
@@ -23,10 +25,16 @@ public:
 public slots:
     void create_game();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     StartupWindow *startup_;
     QGraphicsScene *scene_;
+
+    QGraphicsRectItem *erection_;
+    PlayerBus* bus_;
 };
 
 
