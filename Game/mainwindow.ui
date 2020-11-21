@@ -27,6 +27,16 @@
      <string/>
     </property>
    </widget>
+   <widget class="QGraphicsView" name="MapView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>500</width>
+      <height>500</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

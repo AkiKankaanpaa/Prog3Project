@@ -8,7 +8,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setFixedSize(QSize(500, 500));
     QPixmap pix(":/images/kartta.png");
-    ui->backgroundLabel->setPixmap(pix);
+//    ui->backgroundLabel->setPixmap(pix);
+    scene_ = new QGraphicsScene(this);
+//    ui->MapView->setFixedSize(500, 500);
+    ui->MapView->setScene(scene_);
+    scene_->setSceneRect(0,0,500,500);
+//    scene_->setBackgroundBrush(QImage(":/images/kartta.png"));
+    scene_->addPixmap(pix);
+    ui->MapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->MapView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     startup_ = new StartupWindow(this);
     startup_->show();
     connect(startup_, &StartupWindow::rejected, this, &MainWindow::close);

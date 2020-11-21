@@ -5,6 +5,8 @@
 #include <QLabel>
 #include <QGraphicsScene>
 #include "startupwindow.h"
+#include <QImage>
+
 
 namespace Ui {
 class MainWindow;
