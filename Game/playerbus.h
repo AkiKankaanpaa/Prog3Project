@@ -2,14 +2,16 @@
 #define PLAYERBUS_H
 #include <QGraphicsRectItem>
 
+enum direction {RIGHT, LEFT, UP, DOWN};
 
 class PlayerBus
 {
 public:
     PlayerBus(QGraphicsRectItem* bus);
-    enum direction {RIGHT, LEFT, UP, DOWN};
+    bool currently_on(QPointF point);
+
 public slots:
-    void move(int dir);
+    void move(direction dir);
 
 private:
     QGraphicsRectItem* player_;

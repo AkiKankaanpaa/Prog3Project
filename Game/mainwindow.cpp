@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     scene_ = new QGraphicsScene(this);
 //    ui->MapView->setFixedSize(500, 500);
     ui->MapView->setScene(scene_);
-    scene_->setSceneRect(0,0,500,500);
+    scene_->setSceneRect(0,0,800,800);
 //    scene_->setBackgroundBrush(QImage(":/images/kartta.png"));
     scene_->addPixmap(pix);
     ui->MapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -32,9 +32,38 @@ void MainWindow::create_game()
 {
     erection_ = scene_->addRect(0,0,10,10);
     bus_ = new PlayerBus(erection_);
+    erection_->setBrush(Qt::blue);
 }
 
-void MainWindow::on_pushButton_clicked()
+
+
+void MainWindow::on_downButton_clicked()
 {
-    bus_->move(0);
+    bus_->move(DOWN);
+    ui->ylabel->setText("Y = " + QString::number(erection_->y()));
+}
+
+void MainWindow::on_leftButton_clicked()
+{
+    bus_->move(LEFT);
+    ui->xlabel->setText("X = " + QString::number(erection_->x()));
+}
+
+void MainWindow::on_rightButton_clicked()
+{
+    bus_->move(RIGHT);
+    ui->xlabel->setText("X = " + QString::number(erection_->x()));
+}
+
+void MainWindow::on_upButton_clicked()
+{
+    bus_->move(UP);
+    ui->ylabel->setText("Y = " + QString::number(erection_->y()));
+}
+
+void MainWindow::on_coordinateButton_clicked()
+{
+    QString joo = QString::number(erection_->x()) + " " + QString::number(erection_->y());
+    ErrorBox *coordinates = new ErrorBox(this, joo);
+    coordinates->show();
 }
