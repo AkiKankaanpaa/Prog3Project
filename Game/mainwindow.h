@@ -8,9 +8,23 @@
 #include <QImage>
 #include <QGraphicsRectItem>
 #include "playerbus.h"
+#include "actor.h"
 #include <QGraphicsItem>
 #include <vector>
+#include <map>
 #include <string>
+#include <iostream>
+#include <sstream>
+#include <istream>
+
+#include <utility>
+#include <QFile>
+#include <QTextStream>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QDebug>
+#include <QJsonArray>
+#include <QString>
 
 
 namespace Ui {
@@ -37,16 +51,16 @@ private slots:
 
     void on_upButton_clicked();
 
-    void on_coordinateButton_clicked();
-
 private:
+    void read_coordinates(int current_level = 1);
+    void insert_coordinates(std::string x_line, std::map<int, std::vector<int>>& test);
+
     Ui::MainWindow *ui;
     StartupWindow *startup_;
     QGraphicsScene *scene_;
-    std::vector<QGraphicsRectItem*> maprects_;
-
-    QGraphicsRectItem *erection_;
-    PlayerBus* bus_;
+    QGraphicsRectItem *player_;
+    PlayerBus *bus_;
+    std::map<int, std::vector<int>>* legal_coordinates_;
 };
 
 

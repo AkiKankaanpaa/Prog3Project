@@ -28,42 +28,92 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::read_coordinates(int current_level)
+{
+
+    std::map<int, std::vector<int>> test;
+    QFile file(":/coordinatestxt/kaupunki.txt");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        ;
+    } else { 
+        QTextStream stream(&file);
+        while (!stream.atEnd()) {
+            QString line = stream.readLine();
+            std::string x_line = line.toStdString();
+            insert_coordinates(x_line, test);
+        }
+        legal_coordinates_ = & test;
+        for (std::map<int, std::vector<int>>::iterator it = legal_coordinates_->begin(); it != legal_coordinates_->end(); ++it)
+        {
+            qDebug() << QString::number(it->first);
+            for (std::vector<int>::iterator iter = it->second.begin(); iter != it->second.end(); ++iter) {
+                qDebug() << QString::number(*iter);
+            }
+        }
+    }
+}
+
+void MainWindow::insert_coordinates(std::string x_line, std::map<int, std::vector<int>>& test)
+{
+    std::string x = x_line.substr(0, x_line.find(":"));
+    x_line.erase(x_line.begin(), x_line.begin()+x.size()+1);
+
+    std::istringstream stream(x_line);
+
+    std::vector<int> y_vec;
+    char delimiter = ',';
+
+    std::string current_yvalue;
+
+    std::pair<int,std::vector<int>> current;
+
+    while (getline(stream, current_yvalue, delimiter)) {
+        int int_y = stoi(current_yvalue);
+        y_vec.push_back(int_y);
+    }
+    current = std::make_pair(stoi(x), y_vec);
+    test.insert(current);
+}
+
 void MainWindow::create_game()
 {
-    erection_ = scene_->addRect(0,0,10,10);
-    bus_ = new PlayerBus(erection_);
-    erection_->setBrush(Qt::blue);
+    read_coordinates(1);
+    player_ = scene_->addRect(0,0,10,10);
+    bus_ = new PlayerBus(player_, legal_coordinates_);
+    player_->setBrush(Qt::blue);
 }
 
 
 
 void MainWindow::on_downButton_clicked()
 {
-    bus_->move(DOWN);
-    ui->ylabel->setText("Y = " + QString::number(erection_->y()));
+    if(bus_->can_move(DOWN)) {
+        bus_->move(DOWN);
+        ui->ylabel->setText("Y = " + QString::number(player_->y()));
+    }
 }
 
 void MainWindow::on_leftButton_clicked()
 {
-    bus_->move(LEFT);
-    ui->xlabel->setText("X = " + QString::number(erection_->x()));
+    if(bus_->can_move(LEFT)) {
+        bus_->move(LEFT);
+        ui->xlabel->setText("X = " + QString::number(player_->x()));
+    }
 }
 
 void MainWindow::on_rightButton_clicked()
 {
-    bus_->move(RIGHT);
-    ui->xlabel->setText("X = " + QString::number(erection_->x()));
+    if(bus_->can_move(RIGHT)) {
+        bus_->move(RIGHT);
+        ui->xlabel->setText("X = " + QString::number(player_->x()));
+    }
 }
 
 void MainWindow::on_upButton_clicked()
 {
-    bus_->move(UP);
-    ui->ylabel->setText("Y = " + QString::number(erection_->y()));
+    if(bus_->can_move(UP)) {
+        bus_->move(UP);
+        ui->ylabel->setText("Y = " + QString::number(player_->y()));
+    }
 }
 
-void MainWindow::on_coordinateButton_clicked()
-{
-    QString joo = QString::number(erection_->x()) + " " + QString::number(erection_->y());
-    ErrorBox *coordinates = new ErrorBox(this, joo);
-    coordinates->show();
-}

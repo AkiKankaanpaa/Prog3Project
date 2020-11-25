@@ -1,17 +1,12 @@
 #ifndef PLAYERBUS_H
 #define PLAYERBUS_H
 #include <QGraphicsRectItem>
+#include "actor.h"
 
-enum direction {RIGHT, LEFT, UP, DOWN};
-
-class PlayerBus
+class PlayerBus:public Actor
 {
 public:
-    PlayerBus(QGraphicsRectItem* bus);
-    bool currently_on(QPointF point);
-
-public slots:
-    void move(direction dir);
+    PlayerBus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates);
 
 private:
     QGraphicsRectItem* player_;

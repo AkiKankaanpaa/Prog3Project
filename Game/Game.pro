@@ -6,6 +6,7 @@ QT += core gui widgets network multimedia
 CONFIG += c++14
 
 SOURCES += \
+    actor.cpp \
     errorbox.cpp \
     main.cc \
     mainwindow.cpp \
@@ -42,6 +43,7 @@ FORMS += \
     startupwindow.ui
 
 HEADERS += \
+    actor.h \
     errorbox.h \
     mainwindow.h \
     playerbus.h \
@@ -50,4 +52,5 @@ HEADERS += \
 DISTFILES +=
 
 RESOURCES += \
+    coordinates.qrc \
     images.qrc
