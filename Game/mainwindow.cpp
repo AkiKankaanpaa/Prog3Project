@@ -74,6 +74,7 @@ void MainWindow::create_game()
 {
     read_coordinates(1);
     player_ = scene_->addRect(0,0,10,10);
+    player_->setPos(40, 40);
     bus_ = new PlayerBus(player_, legal_coordinates_);
     player_->setBrush(Qt::blue);
 }
