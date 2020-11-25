@@ -10,6 +10,7 @@ SOURCES += \
     errorbox.cpp \
     main.cc \
     mainwindow.cpp \
+    pedestrian.cpp \
     playerbus.cpp \
     startupwindow.cpp
 
@@ -46,6 +47,7 @@ HEADERS += \
     actor.h \
     errorbox.h \
     mainwindow.h \
+    pedestrian.h \
     playerbus.h \
     startupwindow.h
 

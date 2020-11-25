@@ -41,11 +41,6 @@ std::pair<int, int> Actor::return_coordinates()
     return std::pair<int, int>(static_cast<int>(gametoken_->x()), static_cast<int>(gametoken_->y()));
 }
 
-std::map<int, std::vector<int> >& Actor::return_map()
-{
-    return *legal_coordinates_;
-}
-
 void Actor::move(direction dir)
 {
     if(dir == RIGHT){
