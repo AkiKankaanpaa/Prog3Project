@@ -14,7 +14,6 @@ public:
     Actor(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* coordinates);
     bool can_move(direction dir);
     std::pair<int, int> return_coordinates();
-    std::map<int, std::vector<int>>& return_map();
 
 public slots:
     void move(direction dir);
