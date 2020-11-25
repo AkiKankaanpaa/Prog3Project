@@ -3,7 +3,9 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    legal_coordinates_(new std::map<int, std::vector<int>>),
+    ui(new Ui::MainWindow),
+    bus_(nullptr)
 {
     ui->setupUi(this);
 //    this->setFixedSize(QSize(500, 500));
@@ -31,7 +33,6 @@ MainWindow::~MainWindow()
 void MainWindow::read_coordinates(int current_level)
 {
 
-    std::map<int, std::vector<int>> test;
     QFile file(":/coordinatestxt/kaupunki.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         ;
@@ -40,24 +41,17 @@ void MainWindow::read_coordinates(int current_level)
         while (!stream.atEnd()) {
             QString line = stream.readLine();
             std::string x_line = line.toStdString();
-            insert_coordinates(x_line, test);
+            qDebug() << line;
+            insert_coordinates(x_line);
         }
-        legal_coordinates_ = & test;
-        for (std::map<int, std::vector<int>>::iterator it = legal_coordinates_->begin(); it != legal_coordinates_->end(); ++it)
-        {
-            qDebug() << QString::number(it->first);
-            for (std::vector<int>::iterator iter = it->second.begin(); iter != it->second.end(); ++iter) {
-                qDebug() << QString::number(*iter);
-            }
         }
-    }
+
 }
 
-void MainWindow::insert_coordinates(std::string x_line, std::map<int, std::vector<int>>& test)
+void MainWindow::insert_coordinates(std::string x_line)
 {
     std::string x = x_line.substr(0, x_line.find(":"));
     x_line.erase(x_line.begin(), x_line.begin()+x.size()+1);
-
     std::istringstream stream(x_line);
 
     std::vector<int> y_vec;
@@ -70,9 +64,10 @@ void MainWindow::insert_coordinates(std::string x_line, std::map<int, std::vecto
     while (getline(stream, current_yvalue, delimiter)) {
         int int_y = stoi(current_yvalue);
         y_vec.push_back(int_y);
+
     }
-    current = std::make_pair(stoi(x), y_vec);
-    test.insert(current);
+
+    legal_coordinates_->insert({stoi(x), y_vec});
 }
 
 void MainWindow::create_game()

@@ -38,6 +38,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    std::map<int, std::vector<int>>* legal_coordinates_;
 
 public slots:
     void create_game();
@@ -53,14 +54,13 @@ private slots:
 
 private:
     void read_coordinates(int current_level = 1);
-    void insert_coordinates(std::string x_line, std::map<int, std::vector<int>>& test);
+    void insert_coordinates(std::string x_line);
 
     Ui::MainWindow *ui;
     StartupWindow *startup_;
     QGraphicsScene *scene_;
     QGraphicsRectItem *player_;
     PlayerBus *bus_;
-    std::map<int, std::vector<int>>* legal_coordinates_;
 };
 
 

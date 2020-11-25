@@ -20,8 +20,9 @@ public slots:
     void move(direction dir);
 
 private:
-    QGraphicsRectItem* gametoken_;
     std::map<int, std::vector<int>>* legal_coordinates_;
+    QGraphicsRectItem* gametoken_;
+
 };
 
 #endif // ACTOR_H

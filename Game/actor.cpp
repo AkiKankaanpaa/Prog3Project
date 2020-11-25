@@ -1,9 +1,10 @@
 #include "actor.h"
 
-Actor::Actor(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* coordinates)
+Actor::Actor(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* coordinates):
+    legal_coordinates_(coordinates),gametoken_(gametoken)
+
 {
-    gametoken_ = gametoken;
-    legal_coordinates_ = coordinates;
+
 }
 
 bool Actor::can_move(direction dir)
@@ -14,26 +15,24 @@ bool Actor::can_move(direction dir)
 
     if(dir == RIGHT){
         current_coordinates.first += 10;
+        qDebug() << "moving right";
     } else if(dir == LEFT) {
         current_coordinates.first -= 10;
+        qDebug() << "moving left";
     } else if(dir == UP){
-        current_coordinates.second += 10;
-    } else {
         current_coordinates.second -= 10;
+        qDebug() << "moving up";
+    } else {
+        current_coordinates.second += 10;
+        qDebug() << "moving down";
     }
 
     qDebug() << QString::number(current_coordinates.first) << QString::number(current_coordinates.second);
-
     auto y_vec = legal_coordinates_->at(current_coordinates.first);
-
-
-
-//    for (std::map<int, std::vector<int>>::iterator it = legal_coordinates_->begin(); it != legal_coordinates_->end(); ++it)
-//    {
-//        qDebug() << QString::number(it->first);
-//    }
-    qDebug() << "kys5";
-    return true;
+    if (std::count(y_vec.begin(), y_vec.end(), current_coordinates.second)){
+        return true;
+    }
+    return false;
 
 }
 
