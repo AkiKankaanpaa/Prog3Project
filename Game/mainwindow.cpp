@@ -44,8 +44,7 @@ void MainWindow::read_coordinates(int current_level)
             qDebug() << line;
             insert_coordinates(x_line);
         }
-        }
-
+    }
 }
 
 void MainWindow::insert_coordinates(std::string x_line)
@@ -64,9 +63,7 @@ void MainWindow::insert_coordinates(std::string x_line)
     while (getline(stream, current_yvalue, delimiter)) {
         int int_y = stoi(current_yvalue);
         y_vec.push_back(int_y);
-
     }
-
     legal_coordinates_->insert({stoi(x), y_vec});
 }
 

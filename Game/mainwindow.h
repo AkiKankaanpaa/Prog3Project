@@ -26,6 +26,7 @@
 #include <QJsonArray>
 #include <QString>
 
+enum difficulty{ITYD, HMP, UV, USE};
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +56,7 @@ private slots:
 private:
     void read_coordinates(int current_level = 1);
     void insert_coordinates(std::string x_line);
+    void randomize_pedestrians();
 
     Ui::MainWindow *ui;
     StartupWindow *startup_;
