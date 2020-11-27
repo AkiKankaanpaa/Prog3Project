@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     legal_coordinates_(new std::map<int, std::vector<int>>),
     ui(new Ui::MainWindow),
     bus_(nullptr)
+
 {
     ui->setupUi(this);
 //    this->setFixedSize(QSize(500, 500));
@@ -67,9 +68,28 @@ void MainWindow::insert_coordinates(std::string x_line)
     legal_coordinates_->insert({stoi(x), y_vec});
 }
 
+void MainWindow::check_pedestrian_collision()
+{
+    std::vector<unsigned int> pedestrians;
+    std::pair<int,int> player_coords = bus_->return_coordinates();
+    for(unsigned int i = 0; i<list_of_pedestrians_.size(); ++i){
+        if(list_of_pedestrians_.at(i)->return_coordinates() == player_coords){
+            pedestrians.push_back(i);
+        }
+    }
+    std::sort(pedestrians.begin(), pedestrians.end(), std::greater<unsigned int>());
+    for(unsigned int i : pedestrians){
+        scene_->removeItem(list_of_pedestrians_.at(i)->return_self());
+        delete list_of_pedestrians_.at(i);
+        list_of_pedestrians_.erase(list_of_pedestrians_.begin() + i);
+
+    }
+}
+
 void MainWindow::create_game()
 {
     read_coordinates(1);
+    spawn_pedestrians(5);
     player_ = scene_->addRect(0,0,10,10);
     player_->setPos(40, 40);
     bus_ = new PlayerBus(player_, legal_coordinates_);
@@ -82,6 +102,7 @@ void MainWindow::on_downButton_clicked()
 {
     if(bus_->can_move(DOWN)) {
         bus_->move(DOWN);
+        check_pedestrian_collision();
         ui->ylabel->setText("Y = " + QString::number(player_->y()));
     }
 }
@@ -90,6 +111,7 @@ void MainWindow::on_leftButton_clicked()
 {
     if(bus_->can_move(LEFT)) {
         bus_->move(LEFT);
+        check_pedestrian_collision();
         ui->xlabel->setText("X = " + QString::number(player_->x()));
     }
 }
@@ -98,6 +120,7 @@ void MainWindow::on_rightButton_clicked()
 {
     if(bus_->can_move(RIGHT)) {
         bus_->move(RIGHT);
+        check_pedestrian_collision();
         ui->xlabel->setText("X = " + QString::number(player_->x()));
     }
 }
@@ -106,7 +129,34 @@ void MainWindow::on_upButton_clicked()
 {
     if(bus_->can_move(UP)) {
         bus_->move(UP);
+        check_pedestrian_collision();
         ui->ylabel->setText("Y = " + QString::number(player_->y()));
     }
+}
+
+void MainWindow::spawn_pedestrians(int amount)
+{
+    srand(time(0));
+    int seed;
+    for(auto const& x : *legal_coordinates_) {
+        for(int y : x.second){
+
+            seed = 1 + (rand() % 100);
+            if (seed <= amount){
+                QGraphicsRectItem* pedestrian_object = scene_->addRect(0,0,10,10);
+                pedestrian_object->setPos(x.first, y);
+                pedestrian_object->setBrush(Qt::red);
+                Pedestrian* pedestrian = new Pedestrian(pedestrian_object, legal_coordinates_, YES);
+                list_of_pedestrians_.push_back(pedestrian);
+            } else if (seed <= ((3*amount)/2)){
+                QGraphicsRectItem* pedestrian_object = scene_->addRect(0,0,10,10);
+                pedestrian_object->setPos(x.first, y);
+                pedestrian_object->setBrush(Qt::green);
+                Pedestrian* pedestrian = new Pedestrian(pedestrian_object, legal_coordinates_, NO);
+                list_of_pedestrians_.push_back(pedestrian);
+            }
+        }
+    }
+
 }
 

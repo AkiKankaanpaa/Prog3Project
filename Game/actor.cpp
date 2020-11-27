@@ -41,6 +41,11 @@ std::pair<int, int> Actor::return_coordinates()
     return std::pair<int, int>(static_cast<int>(gametoken_->x()), static_cast<int>(gametoken_->y()));
 }
 
+QGraphicsRectItem *Actor::return_self()
+{
+    return gametoken_;
+}
+
 void Actor::move(direction dir)
 {
     if(dir == RIGHT){
