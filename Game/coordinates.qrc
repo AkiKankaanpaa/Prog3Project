@@ -1,7 +1,5 @@
 <RCC>
-    <qresource prefix="/coordinates">
-        <file>coordinates_keskusta.json</file>
-    </qresource>
+    <qresource prefix="/coordinates"/>
     <qresource prefix="/coordinatestxt">
         <file>kaupunki.txt</file>
     </qresource>

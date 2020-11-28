@@ -12,11 +12,13 @@ class Actor
 {
 public:
     Actor(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* coordinates);
+    ~Actor();
     bool can_move(direction dir);
     std::pair<int, int> return_coordinates();
     QGraphicsRectItem* return_self();
+
 public slots:
-    void move(direction dir);
+    void move(direction dir, int amount);
 
 private:
     std::map<int, std::vector<int>>* legal_coordinates_;

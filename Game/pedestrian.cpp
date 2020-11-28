@@ -6,4 +6,14 @@ Pedestrian::Pedestrian(QGraphicsRectItem* gametoken, std::map<int, std::vector<i
     ;
 }
 
+Pedestrian::~Pedestrian()
+{
+    ;
+}
+
+mask Pedestrian::return_maskstatus()
+{
+    return mask_status_;
+}
+
 

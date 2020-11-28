@@ -7,9 +7,12 @@ class PlayerBus:public Actor
 {
 public:
     PlayerBus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates);
+    ~PlayerBus();
+    void set_direction(direction dir);
+    direction return_direction();
 
 private:
-
+    direction current_direction_;
 };
 
 #endif // PLAYERBUS_H

@@ -8,6 +8,7 @@ CONFIG += c++14
 SOURCES += \
     actor.cpp \
     errorbox.cpp \
+    gamestatistics.cpp \
     main.cc \
     mainwindow.cpp \
     pedestrian.cpp \
@@ -46,6 +47,7 @@ FORMS += \
 HEADERS += \
     actor.h \
     errorbox.h \
+    gamestatistics.h \
     mainwindow.h \
     pedestrian.h \
     playerbus.h \
