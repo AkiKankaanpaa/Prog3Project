@@ -157,7 +157,6 @@ void MainWindow::create_game()
 
     tick_timer_ = new QTimer(this);
     connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tick_handler()));
-
     tick_timer_->start(15);
 
     ragemeter_ = ragescene_->addRect(0,0,40,150);
@@ -217,34 +216,36 @@ void MainWindow::spawn_pedestrians(int amount)
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
-    direction current_direction = bus_->return_direction();
-    switch (event->key())  {
-        case Qt::Key_W:
-            if (current_direction != DOWN) {
-                queued_direction_ = UP;
-            }
-            break;
+    if(game_running_){
+        direction current_direction = bus_->return_direction();
+        switch (event->key())  {
+            case Qt::Key_W:
+                if (current_direction != DOWN) {
+                    queued_direction_ = UP;
+                }
+                break;
 
-        case Qt::Key_A:
-            if (current_direction != RIGHT) {
-                queued_direction_ = LEFT;
-            }
-            break;
+            case Qt::Key_A:
+                if (current_direction != RIGHT) {
+                    queued_direction_ = LEFT;
+                }
+                break;
 
-        case Qt::Key_S:
-            if (current_direction != UP) {
-                queued_direction_ = DOWN;
-            }
-            break;
+            case Qt::Key_S:
+                if (current_direction != UP) {
+                    queued_direction_ = DOWN;
+                }
+                break;
 
-        case Qt::Key_D:
-            if (current_direction != LEFT) {
-                queued_direction_ = RIGHT;
-            }
-            break;
+            case Qt::Key_D:
+                if (current_direction != LEFT) {
+                    queued_direction_ = RIGHT;
+                }
+                break;
 
-        default:
-            ;
+            default:
+                ;
+        }
     }
 }
 
@@ -252,5 +253,7 @@ void MainWindow::end_game()
 {
     game_running_ = false;
     tick_timer_->stop();
+    QPixmap pix(":/images/GameOver.png");
+    scene_->addPixmap(pix);
 }
 

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/images">
         <file>kartta.png</file>
+        <file>GameOver.png</file>
     </qresource>
 </RCC>
