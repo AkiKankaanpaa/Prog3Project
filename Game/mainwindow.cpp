@@ -34,7 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete bus_;
     delete ui;
+    delete legal_coordinates_;
+    delete gamestats_;
 }
 
 void MainWindow::read_coordinates(int current_level)
@@ -100,6 +103,7 @@ void MainWindow::check_pedestrian_collision()
                 reduce_rage(10);
             }
             scene_->removeItem(list_of_pedestrians_.at(i)->return_self());
+            delete list_of_pedestrians_.at(i)->return_self();
             delete list_of_pedestrians_.at(i);
             list_of_pedestrians_.erase(list_of_pedestrians_.begin() + i);
         }
@@ -255,5 +259,12 @@ void MainWindow::end_game()
     tick_timer_->stop();
     QPixmap pix(":/images/GameOver.png");
     scene_->addPixmap(pix);
+    int size = list_of_pedestrians_.size() - 1;
+    for(int i = size; i >= 0; i--){
+        scene_->removeItem(list_of_pedestrians_.at(i)->return_self());
+        delete list_of_pedestrians_.at(i)->return_self();
+        delete list_of_pedestrians_.at(i);
+        list_of_pedestrians_.erase(list_of_pedestrians_.begin() + i);
+    }
 }
 
