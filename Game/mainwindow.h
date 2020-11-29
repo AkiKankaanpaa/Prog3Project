@@ -79,7 +79,7 @@ private:
 
     QTimer* tick_timer_;
     int current_tick_;
-    direction queued_direction;
+    direction queued_direction_;
 
     Gamestatistics* gamestats_;
 

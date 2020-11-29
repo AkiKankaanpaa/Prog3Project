@@ -165,6 +165,7 @@ void MainWindow::create_game()
     ragemeter_->setBrush(Qt::red);
 
     game_running_ = true;
+    queued_direction_ = RIGHT;
 
     gamestats_ = new Gamestatistics(ITYD);
 }
@@ -178,7 +179,7 @@ void MainWindow::tick_handler()
 
     if (current_tick_ == 10) {
         current_tick_ = 0;
-        bus_->set_direction(queued_direction);
+        bus_->set_direction(queued_direction_);
         dir = bus_->return_direction();
 
         if (bus_->can_move(dir)) {
@@ -220,25 +221,25 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
     switch (event->key())  {
         case Qt::Key_W:
             if (current_direction != DOWN) {
-                queued_direction = UP;
+                queued_direction_ = UP;
             }
             break;
 
         case Qt::Key_A:
             if (current_direction != RIGHT) {
-                queued_direction = LEFT;
+                queued_direction_ = LEFT;
             }
             break;
 
         case Qt::Key_S:
             if (current_direction != UP) {
-                queued_direction = DOWN;
+                queued_direction_ = DOWN;
             }
             break;
 
         case Qt::Key_D:
             if (current_direction != LEFT) {
-                queued_direction = RIGHT;
+                queued_direction_ = RIGHT;
             }
             break;
 
