@@ -3,34 +3,29 @@
 
 // add necessary includes here
 
-class gamestatistics : public QObject
+class testgamestatistics : public QObject
 {
     Q_OBJECT
 
-public:
-    gamestatistics();
-    ~gamestatistics();
-
 private slots:
     void test_case1();
-
+    void test_case2();
 };
 
-gamestatistics::gamestatistics()
-{
 
+void testgamestatistics::test_case1()
+{
+    Gamestatistics stats(ITYD);
+    QVERIFY(stats.return_points() == 0);
 }
 
-gamestatistics::~gamestatistics()
+void testgamestatistics::test_case2()
 {
-
+    Gamestatistics stats(ITYD);
+    stats.change_points(100);
+    QVERIFY(stats.return_points() == 100);
 }
 
-void gamestatistics::test_case1()
-{
-
-}
-
-QTEST_APPLESS_MAIN(gamestatistics)
+QTEST_APPLESS_MAIN(testgamestatistics)
 
 #include "tst_gamestatistics.moc"
