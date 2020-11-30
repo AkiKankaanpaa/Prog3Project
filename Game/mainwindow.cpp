@@ -189,7 +189,9 @@ void MainWindow::checkPedestrianCollision()
     }
 
     std::sort(gamepieces.begin(), gamepieces.end(), std::greater<unsigned int>());
-
+    if(player_->returnCoordinates() == gnome_->returnCoordinates()){
+        endGame(GNOMED);
+    }
     if (gamepieces.size() > 0) {
         for(unsigned int i : gamepieces){
 
@@ -279,13 +281,11 @@ void MainWindow::tickHandler()
 
     int ragemeter_y = gamestats_->rageDecay();
     ragemeter_->setPos(940, ragemeter_y);
-    if (gamestats_->returnRage() <= 0) {
-       endGame(RAGE);
-    }
-
     ++current_tick_;
-
-    if (current_tick_ == 10) {
+    if (gamestats_->returnRage() <= 0) {
+       current_tick_ = 0;
+       endGame(RAGE);
+    } else if (current_tick_ == 10) {
         current_tick_ = 0;
 
         if (player_->canMove(queued_direction_)) {

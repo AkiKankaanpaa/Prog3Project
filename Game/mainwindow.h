@@ -31,7 +31,7 @@
 #include <sstream>
 #include <fstream>
 
-enum gamestate {RUNNING, VICTORY, RAGE, CRASH};
+enum gamestate {RUNNING, VICTORY, RAGE, CRASH, GNOMED};
 
 namespace Ui {
 class MainWindow;
