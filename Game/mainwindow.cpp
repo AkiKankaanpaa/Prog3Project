@@ -308,8 +308,10 @@ int MainWindow::spawnGamepieces(difficulty diff)
         for(int y : x.second){
             
             current_randint = 1 + (rand() % 100);
-
-            if (current_randint <= powerup_th) {
+            if ((x.first == 40 && y == 40) || (x.first == 50 && y == 40)){
+                ;
+            }
+            else if (current_randint <= powerup_th) {
                 QGraphicsRectItem* pedestrian_object = gamescene_->addRect(0,0,10,10);
                 pedestrian_object->setPos(x.first, y);
                 pedestrian_object->setBrush(Qt::yellow);
