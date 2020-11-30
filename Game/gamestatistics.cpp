@@ -1,7 +1,8 @@
 #include "gamestatistics.h"
 
-Gamestatistics::Gamestatistics(difficulty chosen_difficulty) :
-    current_points_(0), ran_over_maskwearers_(0), ran_over_maskrefusers_(0)
+Gamestatistics::Gamestatistics(int maskrefuser_amount) :
+    current_points_(0), current_rage_(150), current_passengers_(0),
+    remaining_maskrefusers_(maskrefuser_amount), started_games_(0), won_games_(0), lost_games_(0)
 {
 
 }
@@ -11,12 +12,3 @@ Gamestatistics::~Gamestatistics()
 
 }
 
-void Gamestatistics::change_points(int change)
-{
-    current_points_ += change;
-}
-
-int Gamestatistics::return_points()
-{
-    return current_points_;
-}

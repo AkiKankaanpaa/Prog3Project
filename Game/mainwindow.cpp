@@ -5,30 +5,50 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     legal_coordinates_(new std::map<int, std::vector<int>>),
     ui(new Ui::MainWindow),
+    gameimages_(new std::map<gamestate, QPixmap>),
     bus_(nullptr),
+    tick_timer_(new QTimer(this)),
     current_tick_(0),
-    ragetime_(150),
+    queued_direction_(RIGHT),
+    gamestats_(new Gamestatistics(0)),
     game_running_(false)
 
 {
     ui->setupUi(this);
     QPixmap infolabel(":/images/infolabel.png");
     ui->infoLabel->setPixmap(infolabel);
+
+    QPixmap running(":/images/map.png");
+    QPixmap crash(":/images/crash.png");
+    QPixmap rage(":/images/rage.png");
+    QPixmap victory(":/images/victory.png");
+    gameimages_->insert({RUNNING, running});
+    gameimages_->insert({CRASH, crash});
+    gameimages_->insert({RAGE, rage});
+    gameimages_->insert({VICTORY, victory});
+
     ragescene_ = new QGraphicsScene(this);
     ui->rageMeter->setScene(ragescene_);
     ragescene_->setSceneRect(940,10,40,150);
     ui->rageMeter->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->rageMeter->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ragemeter_ = ragescene_->addRect(0,0,40,150);
+    ragemeter_->setPos(940,10);
+    ragemeter_->setBrush(Qt::red);
 
-    scene_ = new QGraphicsScene(this);
-    ui->MapView->setScene(scene_);
-    scene_->setSceneRect(0,0,800,800);
+    gamescene_ = new QGraphicsScene(this);
+    ui->MapView->setScene(gamescene_);
+    gamescene_->setSceneRect(0,0,800,800);
     ui->MapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->MapView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    gamescene_->addPixmap(gameimages_->at(RUNNING));
+
     startup_ = new StartupWindow(this);
     startup_->show();
     connect(startup_, &StartupWindow::rejected, this, &MainWindow::close);
     connect(startup_, &StartupWindow::difficulty_signal, this, &MainWindow::create_game);
+
+    connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tick_handler()));
 }
 
 MainWindow::~MainWindow()
@@ -39,13 +59,13 @@ MainWindow::~MainWindow()
     delete gamestats_;
 }
 
-void MainWindow::read_coordinates(int current_level)
+void MainWindow::read_coordinates()
 {
 
     QFile file(":/coordinatestxt/kaupunki.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         ;
-    } else { 
+    } else {
         QTextStream stream(&file);
         while (!stream.atEnd()) {
             QString line = stream.readLine();
@@ -75,15 +95,57 @@ void MainWindow::insert_coordinates(std::string x_line)
     legal_coordinates_->insert({stoi(x), y_vec});
 }
 
+void MainWindow::create_game(int chosen_difficulty)
+{
+    game_running_ = true;
+    read_coordinates();
+
+    QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
+    playertoken->setPos(40, 40);
+    bus_ = new PlayerBus(playertoken, legal_coordinates_);
+    playertoken->setBrush(Qt::blue);
+
+    set_difficulty_settings(chosen_difficulty);
+}
+
+void MainWindow::set_difficulty_settings(int chosen_difficulty)
+{
+    switch (chosen_difficulty)  {
+        case EXTREMELY_EASY:
+            spawn_pedestrians(10);
+            tick_timer_->start(25);
+            break;
+
+        case EASY:
+            spawn_pedestrians(8);
+            tick_timer_->start(20);
+            break;
+
+        case NOT_EASY:
+            spawn_pedestrians(6);
+            tick_timer_->start(15);
+            break;
+
+        case UNEASY:
+            spawn_pedestrians(4);
+            tick_timer_->start(10);
+            break;
+
+        default:
+            ;
+    }
+}
+
 void MainWindow::check_pedestrian_collision()
 {
     std::vector<unsigned int> pedestrians = {};
-    std::pair<int,int> to_be_player_coords = determine_bus_movement();
+    std::pair<int,int> to_be_player_coords = bus_->determine_movement();
     for(unsigned int i = 0; i<list_of_pedestrians_.size(); ++i){
         if(list_of_pedestrians_.at(i)->return_coordinates() == to_be_player_coords){
             pedestrians.push_back(i);
         }
     }
+
     std::sort(pedestrians.begin(), pedestrians.end(), std::greater<unsigned int>());
     if (pedestrians.size() > 0) {
         for(unsigned int i : pedestrians){
@@ -95,83 +157,41 @@ void MainWindow::check_pedestrian_collision()
             if (was_worn == NO) {
                 ui->lcdPoints->display(points + 100);
                 gamestats_->change_points(100);
-                increase_rage(30);
+                update_rage(30);
+
+                gamestats_->maskrefuser_died();
+
             } else {
                 ui->lcdPoints->display(points - 50);
                 gamestats_->change_points(-50);
-                reduce_rage(10);
+                update_rage(-10);
+
+                gamestats_->morePassengers(1);
             }
-            scene_->removeItem(list_of_pedestrians_.at(i)->return_self());
+
+            gamescene_->removeItem(list_of_pedestrians_.at(i)->return_self());
             delete list_of_pedestrians_.at(i)->return_self();
             delete list_of_pedestrians_.at(i);
             list_of_pedestrians_.erase(list_of_pedestrians_.begin() + i);
         }
     } else {
-        reduce_rage(1);
+        update_rage(-5);
+        if (gamestats_->return_rage() <= 0) {
+            end_game(RAGE);
+        }
     }
 }
 
-std::pair<int, int> MainWindow::determine_bus_movement()
+void MainWindow::update_rage(int amount)
 {
-    std::pair<int, int> current_coordinates = bus_->return_coordinates();
-    direction dir = bus_->return_direction();
-
-    if(dir == RIGHT){
-        current_coordinates.first += 10;
-        return current_coordinates;
-    } else if(dir == LEFT) {
-        current_coordinates.first -= 10;
-        return current_coordinates;
-    } else if(dir == UP){
-        current_coordinates.second -= 10;
-        return current_coordinates;
-    } else {
-        current_coordinates.second += 10;
-        return current_coordinates;
-    }
-}
-
-void MainWindow::reduce_rage(int amount)
-{
-    ragetime_ -= amount;
-    ragemeter_->setPos(940,ragemeter_->y()+amount);
-}
-
-void MainWindow::increase_rage(int amount)
-{
-    if ((ragetime_ + amount) > 150) {
-        ragetime_ = 150;
+    if ((gamestats_->return_rage() + amount) > 150) {
+        gamestats_->change_rage(150 - gamestats_->return_rage());
         ragemeter_->setPos(940,10);
     }
     else {
-        ragetime_+= amount;
+        gamestats_->change_rage(amount);
         ragemeter_->setPos(940,ragemeter_->y()-amount);
     }
-}
-
-void MainWindow::create_game()
-{
-    QPixmap pix(":/images/kartta.png");
-    scene_->addPixmap(pix);
-    read_coordinates(1);
-    spawn_pedestrians(5);
-    player_ = scene_->addRect(0,0,10,10);
-    player_->setPos(40, 40);
-    bus_ = new PlayerBus(player_, legal_coordinates_);
-    player_->setBrush(Qt::blue);
-
-    tick_timer_ = new QTimer(this);
-    connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tick_handler()));
-    tick_timer_->start(15);
-
-    ragemeter_ = ragescene_->addRect(0,0,40,150);
-    ragemeter_->setPos(940,10);
-    ragemeter_->setBrush(Qt::red);
-
-    game_running_ = true;
-    queued_direction_ = RIGHT;
-
-    gamestats_ = new Gamestatistics(ITYD);
 }
 
 void MainWindow::tick_handler()
@@ -189,7 +209,7 @@ void MainWindow::tick_handler()
         if (bus_->can_move(dir)) {
             check_pedestrian_collision();
         } else {
-            end_game();
+            end_game(CRASH);
         }
     }
 }
@@ -203,13 +223,14 @@ void MainWindow::spawn_pedestrians(int amount)
             seed = 1 + (rand() % 100);
 
             if (seed <= amount){
-                QGraphicsRectItem* pedestrian_object = scene_->addRect(0,0,10,10);
+                QGraphicsRectItem* pedestrian_object = gamescene_->addRect(0,0,10,10);
                 pedestrian_object->setPos(x.first, y);
                 pedestrian_object->setBrush(Qt::red);
                 Pedestrian* pedestrian = new Pedestrian(pedestrian_object, legal_coordinates_, NO);
                 list_of_pedestrians_.push_back(pedestrian);
+
             } else if (seed <= ((3*amount)/2)){
-                QGraphicsRectItem* pedestrian_object = scene_->addRect(0,0,10,10);
+                QGraphicsRectItem* pedestrian_object = gamescene_->addRect(0,0,10,10);
                 pedestrian_object->setPos(x.first, y);
                 pedestrian_object->setBrush(Qt::green);
                 Pedestrian* pedestrian = new Pedestrian(pedestrian_object, legal_coordinates_, YES);
@@ -254,15 +275,15 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
     }
 }
 
-void MainWindow::end_game()
+void MainWindow::end_game(gamestate condition)
 {
+    gamescene_->addPixmap(gameimages_->at(RUNNING));
     game_running_ = false;
     tick_timer_->stop();
-    QPixmap pix(":/images/GameOver.png");
-    scene_->addPixmap(pix);
+    gamescene_->addPixmap(gameimages_->at(condition));
     int size = list_of_pedestrians_.size() - 1;
     for(int i = size; i >= 0; i--){
-        scene_->removeItem(list_of_pedestrians_.at(i)->return_self());
+        gamescene_->removeItem(list_of_pedestrians_.at(i)->return_self());
         delete list_of_pedestrians_.at(i)->return_self();
         delete list_of_pedestrians_.at(i);
         list_of_pedestrians_.erase(list_of_pedestrians_.begin() + i);

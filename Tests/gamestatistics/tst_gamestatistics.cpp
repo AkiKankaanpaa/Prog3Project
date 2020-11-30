@@ -15,13 +15,13 @@ private slots:
 
 void testgamestatistics::test_case1()
 {
-    Gamestatistics stats(ITYD);
+    Gamestatistics stats(0);
     QVERIFY(stats.return_points() == 0);
 }
 
 void testgamestatistics::test_case2()
 {
-    Gamestatistics stats(ITYD);
+    Gamestatistics stats(0);
     stats.change_points(100);
     QVERIFY(stats.return_points() == 100);
 }

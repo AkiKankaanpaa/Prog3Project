@@ -11,6 +11,7 @@ public:
     Pedestrian(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates, mask mask_status);
     ~Pedestrian();
     mask return_maskstatus();
+
 private:
     mask mask_status_;
 };

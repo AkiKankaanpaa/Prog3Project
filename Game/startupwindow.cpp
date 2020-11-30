@@ -7,10 +7,10 @@ StartupWindow::StartupWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    ui->difficultyBox->addItem("I'm Too Young to Die");
-    ui->difficultyBox->addItem("Hurt Me Plenty");
-    ui->difficultyBox->addItem("Ultra Violence");
-    ui->difficultyBox->addItem("US Election");
+    ui->difficultyBox->addItem("Extremely Easy");
+    ui->difficultyBox->addItem("Easy");
+    ui->difficultyBox->addItem("Not So Easy");
+    ui->difficultyBox->addItem("Uneasy");
 }
 
 StartupWindow::~StartupWindow()
