@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     gameimages_(new std::map<gamestate, QPixmap>),
     player_(nullptr),
-    scoreboard_(new std::map<std::string, int>),
+    scores_(new std::vector<std::pair<std::string, int>>),
     tick_timer_(new QTimer(this)),
     current_tick_(0),
     queued_direction_(RIGHT),
@@ -60,8 +60,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete legal_coordinates_;
     delete gamestats_;
-    delete scoreboard_;
     delete gameimages_;
+    delete scores_;
 }
 
 void MainWindow::readCoordinates()
@@ -81,6 +81,10 @@ void MainWindow::readCoordinates()
     }
 }
 
+bool compareScore(std::pair<std::string, int> &score_1, std::pair<std::string, int> &score_2)
+{
+    return score_1.second > score_2.second;
+}
 void MainWindow::readHighscores()
 {
     QFile file(":/txtfiles/highscores.txt");
@@ -95,6 +99,7 @@ void MainWindow::readHighscores()
             std::string x_line = line.toStdString();
             insertHighscores(x_line);
         }
+        sort(scores_->begin(), scores_->end(), compareScore);
     }
 }
 
@@ -122,7 +127,8 @@ void MainWindow::insertHighscores(std::string x_line)
 {
     std::string x = x_line.substr(0, x_line.find(":"));
     x_line.erase(x_line.begin(), x_line.begin()+x.size()+1);
-    scoreboard_->insert({x, stoi(x_line)});
+    auto pair = std::make_pair(x, stoi(x_line));
+    scores_->push_back(pair);
 }
 
 void MainWindow::createGame(int chosen_difficulty)
@@ -134,7 +140,6 @@ void MainWindow::createGame(int chosen_difficulty)
     difficulty diff = (difficulty)chosen_difficulty;
 
     game_running_ = true;
-    readHighscores();
 
     if(gamestats_->returnTotalNysses() == 0){
         readCoordinates();
@@ -159,8 +164,10 @@ void MainWindow::createGame(int chosen_difficulty)
 
 void MainWindow::createHighscoreWindow()
 {
-
-    Highscorewindow* hswindow = new Highscorewindow(nullptr, scoreboard_);
+    ui->highscoreButton->setDisabled(true);
+    scores_->clear();
+    readHighscores();
+    Highscorewindow* hswindow = new Highscorewindow(nullptr, scores_);
     hswindow->show();
 }
 

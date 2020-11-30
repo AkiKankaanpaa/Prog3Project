@@ -19,7 +19,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QString>
-
+#include <utility>
 #include <QDebug>
 
 #include <vector>
@@ -60,12 +60,15 @@ private slots:
     void on_highscoreButton_clicked();
 
 private:
+    //bool compareScore(std::pair<std::string, int>& score_1,
+    //         std::pair<std::string, int>& score_2);
     void readCoordinates();
     void readHighscores();
     void insertCoordinates(std::string x_line);
     void insertHighscores(std::string x_line);
 
     int spawnGamepieces(difficulty chosen_difficulty);
+
 
     void setDifficultySettings(difficulty chosen_difficulty);
 
@@ -84,10 +87,9 @@ private:
     std::map<gamestate, QPixmap>* gameimages_;
 
     Bus *player_;
-
     std::vector<Gamepiece*> list_of_gamepieces_;
 
-    std::map<std::string, int>* scoreboard_;
+    std::vector<std::pair<std::string, int>>* scores_;
 
     QTimer* tick_timer_;
     int current_tick_;
