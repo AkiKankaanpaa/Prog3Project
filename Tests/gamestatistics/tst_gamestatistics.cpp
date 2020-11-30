@@ -32,40 +32,40 @@ private slots:
 
 void testgamestatistics::testGamestatisticsCreationValues()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     QVERIFY(stats.returnRage() == 900);
     QVERIFY(stats.returnPoints() == 0);
 }
 
 void testgamestatistics::testChangePoints()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.changePoints(100);
     QVERIFY(stats.returnPoints() == 100);
 }
 
 void testgamestatistics::testChangeRagePositiveOver900()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     QCOMPARE(stats.changeRage(900), int(160 - 900/6));
 }
 
 void testgamestatistics::testChangeRageNegative()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     QCOMPARE(stats.changeRage(-100), int(160 - 800/6));
 }
 
 void testgamestatistics::testChangeRagePositive()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.changeRage(-300);
     QCOMPARE(stats.changeRage(100), int(160 - 700/6));
 }
 
 void testgamestatistics::testRageDecay()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.rageDecay();
     stats.rageDecay();
     stats.rageDecay();
@@ -76,14 +76,14 @@ void testgamestatistics::testRageDecay()
 
 void testgamestatistics::testMorePassengers()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.morePassengers(3);
     QCOMPARE(stats.returnPassengers(), 3);
 }
 
 void testgamestatistics::testPassengerDied()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.morePassengers(5);
     stats.passengerDied(2);
     QCOMPARE(stats.returnPassengers(), 3);
@@ -91,7 +91,7 @@ void testgamestatistics::testPassengerDied()
 
 void testgamestatistics::testResetingAndRemovingRemainingPedestrians()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.resetRemainingPedestrians(10);
     QCOMPARE(stats.returnRemainingPedestrians(), 10);
     stats.removePedestrian();
@@ -104,7 +104,7 @@ void testgamestatistics::testResetingAndRemovingRemainingPedestrians()
 
 void testgamestatistics::testStartingNewNysse()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.newNysse();
     QCOMPARE(stats.returnTotalNysses(), 1);
     stats.newNysse();
@@ -115,7 +115,7 @@ void testgamestatistics::testStartingNewNysse()
 
 void testgamestatistics::testRemovingNysse()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.nysseRemoved();
     QCOMPARE(stats.returnRemovedNysses(), 1);
     stats.nysseRemoved();
@@ -126,7 +126,7 @@ void testgamestatistics::testRemovingNysse()
 
 void testgamestatistics::testNysseLeaving()
 {
-    Gamestatistics stats(0, EASY);
+    Gamestatistics stats;
     stats.nysseLeft();
     QCOMPARE(stats.returnLostNysses(), 1);
     stats.nysseLeft();
