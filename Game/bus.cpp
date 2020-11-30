@@ -1,27 +1,27 @@
-#include "playerbus.h"
+#include "bus.h"
 
-PlayerBus::PlayerBus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates): Actor(gametoken, legal_coordinates),
+Bus::Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates): Actor(gametoken, legal_coordinates),
     current_direction_(RIGHT)
 {
     ;
 }
 
-PlayerBus::~PlayerBus()
+Bus::~Bus()
 {
     ;
 }
 
-void PlayerBus::set_direction(direction dir)
+void Bus::set_direction(direction dir)
 {
     current_direction_ = dir;
 }
 
-direction PlayerBus::return_direction()
+direction Bus::return_direction()
 {
     return current_direction_;
 }
 
-std::pair<int, int> PlayerBus::determine_movement()
+std::pair<int, int> Bus::determine_movement()
 {
     std::pair<int, int> current_coordinates = return_coordinates();
 

@@ -26,7 +26,6 @@ bool Actor::can_move(direction dir)
         current_coordinates.second += 10;
     }
 
-    qDebug() << QString::number(current_coordinates.first) << QString::number(current_coordinates.second);
     auto y_vec = legal_coordinates_->at(current_coordinates.first);
     if (std::count(y_vec.begin(), y_vec.end(), current_coordinates.second)){
         return true;
@@ -56,6 +55,5 @@ void Actor::move(direction dir, int amount)
     } else {
         gametoken_->setPos(gametoken_->x(), gametoken_->y() + amount);
     }
-    qDebug() << gametoken_->x() << gametoken_->y();
 }
 

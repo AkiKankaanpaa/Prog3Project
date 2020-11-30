@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/coordinates"/>
     <qresource prefix="/coordinatestxt">
-        <file>kaupunki.txt</file>
+        <file>tamperecoordinates.txt</file>
     </qresource>
 </RCC>

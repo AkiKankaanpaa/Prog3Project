@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "pedestrian.h"
-#include "playerbus.h"
+#include "gamepiece.h"
+#include "bus.h"
 #include "gamestatistics.h"
 #include "startupwindow.h"
 #include "errorbox.h"
@@ -57,13 +57,11 @@ private:
     void read_coordinates();
     void insert_coordinates(std::string x_line);
 
-    void spawn_pedestrians(int amount);
+    int spawn_gamepieces(difficulty chosen_difficulty);
 
-    void set_difficulty_settings(int chosen_difficulty);
+    void set_difficulty_settings(difficulty chosen_difficulty);
 
     void check_pedestrian_collision();
-
-    void update_rage(int change);
 
     void end_game(gamestate condition);
 
@@ -77,9 +75,9 @@ private:
 
     std::map<gamestate, QPixmap>* gameimages_;
 
-    PlayerBus *bus_;
+    Bus *player_;
 
-    std::vector<Pedestrian*> list_of_pedestrians_;
+    std::vector<Gamepiece*> list_of_gamepieces_;
 
     QTimer* tick_timer_;
     int current_tick_;

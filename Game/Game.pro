@@ -7,12 +7,12 @@ CONFIG += c++14
 
 SOURCES += \
     actor.cpp \
+    bus.cpp \
     errorbox.cpp \
+    gamepiece.cpp \
     gamestatistics.cpp \
     main.cc \
     mainwindow.cpp \
-    pedestrian.cpp \
-    playerbus.cpp \
     startupwindow.cpp
 
 win32:CONFIG(release, debug|release): LIBS += \
@@ -46,11 +46,11 @@ FORMS += \
 
 HEADERS += \
     actor.h \
+    bus.h \
     errorbox.h \
+    gamepiece.h \
     gamestatistics.h \
     mainwindow.h \
-    pedestrian.h \
-    playerbus.h \
     startupwindow.h
 
 DISTFILES +=
