@@ -11,7 +11,6 @@ SOURCES += \
     errorwindow.cpp \
     gamepiece.cpp \
     gamestatistics.cpp \
-    highscorewindow.cpp \
     main.cc \
     mainwindow.cpp \
     startupwindow.cpp
@@ -42,7 +41,6 @@ else:unix: PRE_TARGETDEPS += \
 
 FORMS += \
     errorwindow.ui \
-    highscorewindow.ui \
     mainwindow.ui \
     startupwindow.ui
 
@@ -52,7 +50,6 @@ HEADERS += \
     errorwindow.h \
     gamepiece.h \
     gamestatistics.h \
-    highscorewindow.h \
     mainwindow.h \
     startupwindow.h
 

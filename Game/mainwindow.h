@@ -6,7 +6,6 @@
 #include "gamestatistics.h"
 #include "startupwindow.h"
 #include "errorwindow.h"
-#include "highscorewindow.h"
 
 #include <QMainWindow>
 #include <QLabel>
@@ -29,6 +28,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 enum gamestate {RUNNING, VICTORY, RAGE, CRASH};
 
@@ -49,19 +49,12 @@ public:
 
 public slots:
     void createGame(int chosen_difficulty, QString name);
-    void createHighscoreWindow();
-
-signals:
-    void highscoreSignal();
 
 private slots:
     void tickHandler();
 
-    void on_highscoreButton_clicked();
-
 private:
     void readCoordinates();
-    void readHighscores();
     void insertCoordinates(std::string x_line);
     void insertHighscores(std::string x_line);
 
@@ -70,8 +63,6 @@ private:
     void setDifficultySettings(difficulty chosen_difficulty);
 
     void checkPedestrianCollision();
-
-    void rewriteHighscores();
 
     void endGame(gamestate condition);
 
@@ -87,8 +78,6 @@ private:
 
     Bus *player_;
     std::vector<Gamepiece*> list_of_gamepieces_;
-
-    std::vector<std::pair<std::string, int>>* scores_;
 
     QTimer* tick_timer_;
     int current_tick_;
