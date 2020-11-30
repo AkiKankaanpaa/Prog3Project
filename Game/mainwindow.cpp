@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     startup_->show();
     connect(startup_, &StartupWindow::rejected, this, &MainWindow::close);
     connect(startup_, &StartupWindow::difficultySignal, this, &MainWindow::createGame);
+    gamestats_ = new Gamestatistics();
 
     connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tickHandler()));
 }
@@ -97,26 +98,32 @@ void MainWindow::insertCoordinates(std::string x_line)
 
 void MainWindow::createGame(int chosen_difficulty)
 {
+    qDebug() << "at create game";
     gamescene_->addPixmap(gameimages_->at(RUNNING));
 
     difficulty diff = (difficulty)chosen_difficulty;
 
     game_running_ = true;
-    readCoordinates();
-
+    if(gamestats_->returnTotalNysses() == 0){
+        readCoordinates();
+    }
     QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
     playertoken->setPos(40, 40);
     player_ = new Bus(playertoken, legal_coordinates_);
     playertoken->setBrush(Qt::black);
-
+    if(gamestats_->returnTotalNysses() > 0){
+        player_->setDirection(RIGHT);
+    }
+    qDebug() << QString::number(gamestats_->returnTotalNysses());
     setDifficultySettings(diff);
+    gamestats_->newNysse();
 }
 
 void MainWindow::setDifficultySettings(difficulty chosen_difficulty)
 {
     int total_pedestrians = spawnGamepieces(chosen_difficulty);
-    gamestats_ = new Gamestatistics(total_pedestrians, chosen_difficulty);
-
+    gamestats_->resetRemainingPedestrians(total_pedestrians);
+    gamestats_->setGameDifficulty(chosen_difficulty);
     switch (chosen_difficulty)  {
         case EXTREMELY_EASY: {
             tick_timer_->start(25);
@@ -351,11 +358,21 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
                 }
                 break;
 
-            case Qt::Key_R:
-            break;
-
             default:
                 ;
+        }
+    } else if (!game_running_){
+        switch (event->key()) {
+            case Qt::Key_R:
+                if(gamestats_->returnTotalNysses() > 0){
+                    startup_->show();
+                    gamestats_->changeRage(900);
+                    gamestats_->changePoints(-gamestats_->returnPoints());
+                    ui->lcdPoints->display(0);
+                    queued_direction_ = RIGHT;
+                }
+        default:
+            ;
         }
     }
 }
@@ -364,7 +381,7 @@ void MainWindow::endGame(gamestate condition)
 {
     game_running_ = false;
     tick_timer_->stop();
-
+    delete player_;
     gamescene_->addPixmap(gameimages_->at(condition));
 
     for(int i = (list_of_gamepieces_.size() - 1); i >= 0; i--){
