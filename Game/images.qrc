@@ -6,8 +6,4 @@
         <file>victory.png</file>
         <file>rage.png</file>
     </qresource>
-    <qresource prefix="/new/txtfiles">
-        <file>tamperecoordinates.txt</file>
-        <file>highscores.txt</file>
-    </qresource>
 </RCC>

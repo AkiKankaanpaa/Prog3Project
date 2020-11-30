@@ -25,14 +25,14 @@ public:
     int returnPassengers() {return current_passengers_;};
     void doesDiseaseSpread();
 
-    void resetRemainingPedestrians(int maximum){remaining_pedestrians_ = maximum;};
-    void removePedestrian(){--remaining_pedestrians_;}
+    void resetRemainingPedestrians(int maximum) {remaining_pedestrians_ = maximum;};
+    void removePedestrian() {--remaining_pedestrians_;}
     int returnRemainingPedestrians() {return remaining_pedestrians_;};
 
-    void newNysse(){++total_nysses_;};
-    int returnTotalNysses(){return total_nysses_;};
+    void newNysse() {++total_nysses_;};
+    int returnTotalNysses() {return total_nysses_;};
     void nysseRemoved() {++lost_nysses_;};
-    int returnRemovedNysses(){return lost_nysses_;};
+    int returnRemovedNysses() {return lost_nysses_;};
     void nysseLeft() {++remaining_nysses_;};
     int returnLostNysses() {return remaining_nysses_;};
 

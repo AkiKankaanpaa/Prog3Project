@@ -62,9 +62,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::readCoordinates()
 {
-    QFile file(":/coordinatestxt/tamperecoordinates.txt");
+    QFile file(":/txtfiles/tamperecoordinates.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        ;
+        qDebug() << "didnt read";
     } else {
         QTextStream stream(&file);
         while (!stream.atEnd()) {
@@ -352,9 +352,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
                 break;
 
             case Qt::Key_R:
-                if (game_running_) {
-                    ;
-                }
+            break;
 
             default:
                 ;
