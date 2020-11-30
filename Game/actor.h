@@ -6,17 +6,26 @@
 #include <vector>
 #include <algorithm>
 
-enum direction {RIGHT, LEFT, UP, DOWN};
 
+/**
+ * @brief The Actor class in inherited by all of the actors.
+ *
+ *  The class provides methods on returning information on each individual object who
+ * inherits from this class.
+ */
 class Actor
 {
 public:
+    /**
+     * @brief Actor: Constructor
+     * @param gametoken: QGraphicsRectItem, works as the gamepiece on the gameboard.
+     * @param coordinates
+     */
     Actor(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* coordinates);
-    ~Actor();
-    bool canMove(direction dir);
+    virtual ~Actor();
     std::pair<int, int> returnCoordinates();
-    QGraphicsRectItem* returnSelf();
-    void move(direction dir, int amount);
+    QGraphicsRectItem* returnSelf() {return gametoken_;};
+    std::map<int, std::vector<int>>* returnLegalCoordinates() {return legal_coordinates_;};
 
 private:
     std::map<int, std::vector<int>>* legal_coordinates_;

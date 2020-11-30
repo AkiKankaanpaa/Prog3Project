@@ -1,8 +1,11 @@
 #ifndef BUS_H
 #define BUS_H
-#include <QGraphicsRectItem>
-#include "actor.h"
+#include "movingactor.h"
 
+/**
+ * @brief The powerup enum: used to determine the current powerup. Default-value is NONE,
+ * given in constuctor to Bus.
+ */
 enum powerup {NONE, RAGE_IMMUNITY, POINTS_MULTIPLIER, DISEASE_IMMUNITY};
 
 
@@ -12,7 +15,7 @@ enum powerup {NONE, RAGE_IMMUNITY, POINTS_MULTIPLIER, DISEASE_IMMUNITY};
  * The class provides methods on setting the continued direction of the Bus, as well as for
  * determining the spot the bus will travel to next with it current direction.
  */
-class Bus : public Actor
+class Bus : public MovingActor
 {
 public:
     /**
@@ -23,29 +26,22 @@ public:
      * class to determine if the next position to which the bus is moving to is legal.
      */
     Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates);
-    
+
     /**
-     * @brief Bus~: Destructor 
+     * @brief returnCurrentPowerup: Returns which powerup if any are active on the bus.
+     * @return current_powerup_: powerup enum, current powerup in current_powerup_ is returned.
      */
-    ~Bus();
-    
-    /**
-     * @brief setDirection: Sets the direction in which the bus will next move.
-     * @param dir: Direction enum, is set within the current_direction_ private variable as the
-     * current moving direction. Choices are at 90 degree angles.
-     */
-    void setDirection(direction dir) {current_direction_ = dir;};
-    
-    /**
-     * @brief returnDirection
-     * @return direction, returns the current moving direction of the bus.
-     */
-    direction returnDirection() {return current_direction_;};
     powerup returnCurrentPowerup() {return current_powerup_;};
+
+    /**
+     * @brief determineMovement: Returns the point the bus will next move to, in 10 pixel intervals.
+     * @return current_coordinates: pair<int, int>, returns the next moving position
+     *  in coordinates as pair<x, y>.
+     */
     std::pair<int, int> determineMovement();
 
 private:
-    direction current_direction_;
+    // current active powerup, can be none
     powerup current_powerup_;
 };
 

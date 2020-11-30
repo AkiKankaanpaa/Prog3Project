@@ -1,12 +1,7 @@
 #include "bus.h"
 
 Bus::Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates):
-    Actor(gametoken, legal_coordinates), current_direction_(RIGHT), current_powerup_(NONE)
-{
-    ;
-}
-
-Bus::~Bus()
+    MovingActor(gametoken, legal_coordinates), current_powerup_(NONE)
 {
     ;
 }
@@ -15,7 +10,9 @@ std::pair<int, int> Bus::determineMovement()
 {
     std::pair<int, int> current_coordinates = returnCoordinates();
 
-    switch (current_direction_)  {
+    // Switchcase adds 10 in the appropriate coordinate to match where the bus will be
+    // after 10 ticks, the direction is checked from current_direction_
+    switch (returnDirection())  {
         case RIGHT:
             current_coordinates.first += 10;
             break;

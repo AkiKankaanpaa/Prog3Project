@@ -14,6 +14,7 @@ SOURCES += \
     gardengnome.cpp \
     main.cc \
     mainwindow.cpp \
+    movingactor.cpp \
     startupwindow.cpp
 
 win32:CONFIG(release, debug|release): LIBS += \
@@ -53,6 +54,7 @@ HEADERS += \
     gamestatistics.h \
     gardengnome.h \
     mainwindow.h \
+    movingactor.h \
     startupwindow.h
 
 DISTFILES +=
