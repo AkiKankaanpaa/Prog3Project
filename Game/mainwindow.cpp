@@ -147,6 +147,8 @@ void MainWindow::createGame(int chosen_difficulty)
     setDifficultySettings(diff);
 
     ui->pedestrianValue->setText(QString::number(gamestats_->returnRemainingPedestrians()));
+
+    gamestats_->resetCurrentPassengers();
     ui->passengerValue->setText("0");
     ui->lcdPoints->display(0);
 }
@@ -438,12 +440,19 @@ void MainWindow::endGame(gamestate condition)
     if (condition == VICTORY) {
         gamestats_->nysseLeft();
         ui->wonGameValue->setText(QString::number(gamestats_->returnLostNysses()));
+
         gamestats_->changePoints(gamestats_->returnPassengers() * 150);
+        gamestats_->changeTotalPoints(gamestats_->returnPassengers() * 150);
+        ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
+        ui->lcdPoints->display(QString::number(gamestats_->returnPoints()));
     } else {
         gamestats_->nysseRemoved();
         ui->lostGameValue->setText(QString::number(gamestats_->returnRemovedNysses()));
+
         gamestats_->changePoints(gamestats_->returnPassengers() * -50);
+        gamestats_->changeTotalPoints(gamestats_->returnPassengers() * -50);
         ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
+        ui->lcdPoints->display(QString::number(gamestats_->returnPoints()));
     }
 
     for(int i = (list_of_gamepieces_.size() - 1); i >= 0; i--){
