@@ -7,7 +7,7 @@ class GardenGnome : public MovingActor
 {
 public:
     GardenGnome(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates);
-    void run_away_if_can();
+    void runAwayIfCan();
 };
 
 #endif // GARDENGNOME_H

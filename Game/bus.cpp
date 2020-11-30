@@ -34,3 +34,8 @@ std::pair<int, int> Bus::determineMovement()
     }
     return current_coordinates;
 }
+
+void Bus::setCurrentPowerup(powerup power)
+{
+    current_powerup_ = power;
+}

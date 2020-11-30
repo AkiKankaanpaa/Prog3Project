@@ -39,6 +39,7 @@ public:
      *  in coordinates as pair<x, y>.
      */
     std::pair<int, int> determineMovement();
+    void setCurrentPowerup(powerup);
 
 private:
     // current active powerup, can be none

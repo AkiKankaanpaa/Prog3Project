@@ -51,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gamestats_ = new Gamestatistics();
 
     connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tickHandler()));
+    srand(time(0));
 }
 
 MainWindow::~MainWindow()
@@ -201,13 +202,13 @@ void MainWindow::checkPedestrianCollision()
 
             enum::piecetype current_piecetype = list_of_gamepieces_.at(i)->returnPiecetype();
 
-            int points = ui->lcdPoints->intValue();
-
             switch(current_piecetype) {
                 case MASKLESS: {
-                    ui->lcdPoints->display(points + 100);
+                    if(player_->returnCurrentPowerup() == POINTS_MULTIPLIER){
+                        gamestats_->changePoints(100);
+                    }
                     gamestats_->changePoints(100);
-
+                    ui->lcdPoints->display(gamestats_->returnPoints());
                     gamestats_->changeTotalPoints(100);
                     ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
 
@@ -216,7 +217,7 @@ void MainWindow::checkPedestrianCollision()
 
                     gamestats_->removePedestrian();
 
-                    if (gamestats_->returnPassengers() > 0) {
+                    if (gamestats_->returnPassengers() > 0 && player_->returnCurrentPowerup() != DISEASE_IMMUNITY) {
                         gamestats_->doesDiseaseSpread();
                     }
 
@@ -229,9 +230,10 @@ void MainWindow::checkPedestrianCollision()
                     break;
                 }
                 case MASKED: {
-                    ragemeter_y = gamestats_->changeRage(-50);
-                    ragemeter_->setPos(940, ragemeter_y);
-
+                    if(player_->returnCurrentPowerup() != RAGE_IMMUNITY){
+                        ragemeter_y = gamestats_->changeRage(-50);
+                        ragemeter_->setPos(940, ragemeter_y);
+                    }
                     gamestats_->removePedestrian();
                     gamestats_->morePassengers(1);
 
@@ -247,9 +249,8 @@ void MainWindow::checkPedestrianCollision()
                     break;
                 }
                 case POLICE: {
-                    ui->lcdPoints->display(points - 250);
                     gamestats_->changePoints(-250);
-
+                    ui->lcdPoints->display(gamestats_->returnPoints());
                     gamestats_->changeTotalPoints(-250);
                     ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
 
@@ -259,10 +260,15 @@ void MainWindow::checkPedestrianCollision()
                     break;
                 }
                 case POWERUP: {
-                    ui->lcdPoints->display(points + 500);
+                    if(player_->returnCurrentPowerup() == POINTS_MULTIPLIER){
+                        gamestats_->changePoints(500);
+                    }
                     gamestats_->changePoints(500);
+                    ui->lcdPoints->display(gamestats_->returnPoints());
                     gamestats_->changeTotalPoints(500);
                     ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
+                    int power = 1 + (rand() % 4);
+                    player_->setCurrentPowerup((powerup)power);
 
                     break;
                 }
@@ -279,12 +285,13 @@ void MainWindow::checkPedestrianCollision()
 
 void MainWindow::tickHandler()
 {
-    gnome_->run_away_if_can();
+    gnome_->runAwayIfCan();
     direction dir = player_->returnDirection();
     player_->move(dir, 1);
-
-    int ragemeter_y = gamestats_->rageDecay();
-    ragemeter_->setPos(940, ragemeter_y);
+    if(player_->returnCurrentPowerup() != RAGE_IMMUNITY){
+        int ragemeter_y = gamestats_->rageDecay();
+        ragemeter_->setPos(940, ragemeter_y);
+    }
     ++current_tick_;
     if (gamestats_->returnRage() <= 0) {
        current_tick_ = 0;
@@ -338,7 +345,6 @@ int MainWindow::spawnGamepieces(difficulty diff)
         }
     }
     
-    srand(time(0));
     int current_randint;
     int game_end_amount = 0;
     
@@ -457,11 +463,13 @@ void MainWindow::endGame(gamestate condition)
         ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
         ui->lcdPoints->display(QString::number(gamestats_->returnPoints()));
     }
-
-    for(int i = (list_of_gamepieces_.size() - 1); i >= 0; i--){
-        gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());
-        delete list_of_gamepieces_.at(i)->returnSelf();
-        delete list_of_gamepieces_.at(i);
-        list_of_gamepieces_.erase(list_of_gamepieces_.begin() + i);
+    if(list_of_gamepieces_.size() > 0){
+        for(int i = (int) (list_of_gamepieces_.size() - 1); i >= 0; i--){
+            gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());
+            delete list_of_gamepieces_.at(i)->returnSelf();
+            delete list_of_gamepieces_.at(i);
+            list_of_gamepieces_.erase(list_of_gamepieces_.begin() + i);
+        }
     }
+
 }

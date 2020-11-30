@@ -6,7 +6,7 @@ GardenGnome::GardenGnome(QGraphicsRectItem* gametoken, std::map<int, std::vector
     srand(time(0));
 }
 
-void GardenGnome::run_away_if_can()
+void GardenGnome::runAwayIfCan()
 {
     if(canMove(returnDirection())){
         move(returnDirection(), 10);
