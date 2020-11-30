@@ -48,11 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     startup_->show();
     connect(startup_, &StartupWindow::rejected, this, &MainWindow::close);
     connect(startup_, &StartupWindow::difficultySignal, this, &MainWindow::createGame);
-<<<<<<< HEAD
     connect(this, &MainWindow::highscoreSignal, this, &MainWindow::createHighscoreWindow);
-=======
     gamestats_ = new Gamestatistics();
->>>>>>> c670da0d9602653a1327b3e9ee7f2aeedd7dbcf6
 
     connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tickHandler()));
 }
@@ -134,15 +131,12 @@ void MainWindow::createGame(int chosen_difficulty)
     difficulty diff = (difficulty)chosen_difficulty;
 
     game_running_ = true;
-<<<<<<< HEAD
     readCoordinates();
     readHighscores();
 
-=======
     if(gamestats_->returnTotalNysses() == 0){
         readCoordinates();
     }
->>>>>>> c670da0d9602653a1327b3e9ee7f2aeedd7dbcf6
     QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
     playertoken->setPos(40, 40);
     player_ = new Bus(playertoken, legal_coordinates_);
@@ -401,12 +395,6 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
                 }
                 break;
 
-<<<<<<< HEAD
-            case Qt::Key_R:
-                break;
-
-=======
->>>>>>> c670da0d9602653a1327b3e9ee7f2aeedd7dbcf6
             default:
                 ;
         }
