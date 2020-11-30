@@ -15,8 +15,8 @@ public:
     int returnPoints() {return current_points_;};
     void changePoints(int change) {current_points_ += change;};
 
-    int returnTotalPoints() {return current_points_;};
-    void changeTotalPoints(int change) {current_points_ += change;};
+    int returnTotalPoints() {return total_points_;};
+    void changeTotalPoints(int change) {total_points_ += change;};
 
     int returnRage() {return current_rage_;};
     int changeRage(int change);
@@ -27,6 +27,7 @@ public:
     void passengerDied(int num) {current_passengers_ -= num;};
     int returnPassengers() {return current_passengers_;};
     void doesDiseaseSpread();
+    void resetCurrentPassengers() {current_passengers_ = 0;};
 
     void resetRemainingPedestrians(int maximum) {remaining_pedestrians_ = maximum;};
     void removePedestrian() {--remaining_pedestrians_;}
