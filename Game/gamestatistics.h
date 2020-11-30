@@ -9,7 +9,7 @@ enum difficulty {EXTREMELY_EASY, EASY, NOT_EASY, UNEASY};
 class Gamestatistics : public Interface::IStatistics
 {
 public:
-    Gamestatistics(int pedestrian_amount, difficulty chosen_difficulty);
+    Gamestatistics();
     ~Gamestatistics();
 
     int returnPoints() {return current_points_;};
@@ -35,6 +35,7 @@ public:
     int returnRemovedNysses() {return lost_nysses_;};
     void nysseLeft() {++remaining_nysses_;};
     int returnLostNysses() {return remaining_nysses_;};
+    void setGameDifficulty(difficulty dif);
 
 private:
     int current_points_;
