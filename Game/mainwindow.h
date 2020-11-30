@@ -48,7 +48,7 @@ public:
     void keyPressEvent(QKeyEvent* event) override;
 
 public slots:
-    void createGame(int chosen_difficulty);
+    void createGame(int chosen_difficulty, QString name);
     void createHighscoreWindow();
 
 signals:
@@ -60,8 +60,6 @@ private slots:
     void on_highscoreButton_clicked();
 
 private:
-    //bool compareScore(std::pair<std::string, int>& score_1,
-    //         std::pair<std::string, int>& score_2);
     void readCoordinates();
     void readHighscores();
     void insertCoordinates(std::string x_line);
@@ -69,10 +67,11 @@ private:
 
     int spawnGamepieces(difficulty chosen_difficulty);
 
-
     void setDifficultySettings(difficulty chosen_difficulty);
 
     void checkPedestrianCollision();
+
+    void rewriteHighscores();
 
     void endGame(gamestate condition);
 

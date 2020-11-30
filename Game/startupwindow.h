@@ -17,7 +17,7 @@ public:
     ~StartupWindow();
 
 signals:
-    void difficultySignal(int difficulty);
+    void difficultySignal(int difficulty, QString name);
 
 private slots:
     void on_startButton_clicked();

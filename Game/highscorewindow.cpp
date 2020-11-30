@@ -17,12 +17,6 @@ Highscorewindow::~Highscorewindow()
 
 void Highscorewindow::createScorePairs()
 {
-
-
-//    sort(score_pairs.begin(), score_pairs.end(), compareScore);
-        qDebug() << "here";
-
-
     ui->firstname->setText(QString::fromStdString(scores_->at(0).first));
     ui->firstpoints->setText(QString::number(scores_->at(0).second));
 

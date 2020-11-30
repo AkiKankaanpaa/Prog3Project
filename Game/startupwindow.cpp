@@ -22,7 +22,7 @@ void StartupWindow::on_startButton_clicked()
 {
     if (ui->nameBox->text() != "") {
         accept();
-        emit difficultySignal(ui->difficultyBox->currentIndex());
+        emit difficultySignal(ui->difficultyBox->currentIndex(), ui->nameBox->text());
     } else {
         ErrorWindow *nameerror = new ErrorWindow(this, "No name entered.");
         nameerror->show();

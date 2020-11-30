@@ -100,6 +100,7 @@ void MainWindow::readHighscores()
             insertHighscores(x_line);
         }
         sort(scores_->begin(), scores_->end(), compareScore);
+        file.close();
     }
 }
 
@@ -131,18 +132,20 @@ void MainWindow::insertHighscores(std::string x_line)
     scores_->push_back(pair);
 }
 
-void MainWindow::createGame(int chosen_difficulty)
+void MainWindow::createGame(int chosen_difficulty, QString name)
 {
-    qDebug() << "at create game";
     ui->highscoreButton->setDisabled(true);
     gamescene_->addPixmap(gameimages_->at(RUNNING));
 
     difficulty diff = (difficulty)chosen_difficulty;
 
+    gamestats_->changePlayer(name.toStdString());
+
     game_running_ = true;
 
     if(gamestats_->returnTotalNysses() == 0){
         readCoordinates();
+        readHighscores();
         QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
         playertoken->setPos(40, 40);
         player_ = new Bus(playertoken, legal_coordinates_);
@@ -157,7 +160,6 @@ void MainWindow::createGame(int chosen_difficulty)
         player_->returnSelf()->setPos(40,40);
         player_->returnSelf()->setBrush(Qt::black);
     }
-    qDebug() << QString::number(gamestats_->returnTotalNysses());
     setDifficultySettings(diff);
     gamestats_->newNysse();
 }
@@ -271,6 +273,27 @@ void MainWindow::checkPedestrianCollision()
                 list_of_gamepieces_.erase(list_of_gamepieces_.begin() + i);
             }
         }
+    }
+}
+
+void MainWindow::rewriteHighscores()
+{
+    std::pair < std::string, int > current_gameinfo = std::make_pair(gamestats_->returnPlayer(), gamestats_->returnPoints());
+    scores_->push_back(current_gameinfo);
+    sort(scores_->begin(), scores_->end(), compareScore);
+    QFile writefile(":/txtfiles/tamperecoordinates.txt");
+    if (!writefile.open(QIODevice::ReadWrite)) {
+         qDebug() << "cannot write";
+    } else {
+        writefile.resize(0);
+        QTextStream out(&writefile);
+        for (int i = 0; i < 10; ++i) {
+            qDebug() << QString::fromStdString(scores_->at(i).first)
+                     << QString::number(scores_->at(i).second);
+            out << QString::fromStdString(scores_->at(i).first)
+                << ":" << QString::number(scores_->at(i).second);
+        }
+        writefile.close();
     }
 }
 
@@ -430,6 +453,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 
 void MainWindow::endGame(gamestate condition)
 {
+    rewriteHighscores();
     ui->highscoreButton->setEnabled(true);
     game_running_ = false;
     tick_timer_->stop();

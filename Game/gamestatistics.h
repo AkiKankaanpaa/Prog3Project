@@ -37,10 +37,14 @@ public:
     int returnLostNysses() {return remaining_nysses_;};
     void setGameDifficulty(difficulty dif);
 
+    void changePlayer(std::string player_name) {current_player_ = player_name;};
+    std::string returnPlayer() {return current_player_;};
+
 private:
     int current_points_;
     int current_rage_;
     int current_passengers_;
+    std::string current_player_;
 
     int rage_decay_amount_;
     int remaining_pedestrians_;
