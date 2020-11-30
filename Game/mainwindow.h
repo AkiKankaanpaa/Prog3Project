@@ -5,7 +5,7 @@
 #include "bus.h"
 #include "gamestatistics.h"
 #include "startupwindow.h"
-#include "errorbox.h"
+#include "errorwindow.h"
 
 #include <QMainWindow>
 #include <QLabel>
@@ -24,7 +24,6 @@
 #include <vector>
 #include <map>
 #include <string>
-
 #include <algorithm>
 
 #include <iostream>
@@ -48,22 +47,22 @@ public:
     void keyPressEvent(QKeyEvent* event) override;
 
 public slots:
-    void create_game(int chosen_difficulty);
+    void createGame(int chosen_difficulty);
 
 private slots:
-    void tick_handler();
+    void tickHandler();
 
 private:
-    void read_coordinates();
-    void insert_coordinates(std::string x_line);
+    void readCoordinates();
+    void insertCoordinates(std::string x_line);
 
-    int spawn_gamepieces(difficulty chosen_difficulty);
+    int spawnGamepieces(difficulty chosen_difficulty);
 
-    void set_difficulty_settings(difficulty chosen_difficulty);
+    void setDifficultySettings(difficulty chosen_difficulty);
 
-    void check_pedestrian_collision();
+    void checkPedestrianCollision();
 
-    void end_game(gamestate condition);
+    void endGame(gamestate condition);
 
     Ui::MainWindow *ui;
     StartupWindow *startup_;

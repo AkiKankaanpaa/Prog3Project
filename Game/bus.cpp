@@ -11,19 +11,19 @@ Bus::~Bus()
     ;
 }
 
-void Bus::set_direction(direction dir)
+void Bus::setDirection(direction dir)
 {
     current_direction_ = dir;
 }
 
-direction Bus::return_direction()
+direction Bus::returnDirection()
 {
     return current_direction_;
 }
 
-std::pair<int, int> Bus::determine_movement()
+std::pair<int, int> Bus::determineMovement()
 {
-    std::pair<int, int> current_coordinates = return_coordinates();
+    std::pair<int, int> current_coordinates = returnCoordinates();
 
     switch (current_direction_)  {
         case RIGHT:

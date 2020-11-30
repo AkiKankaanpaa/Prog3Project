@@ -11,7 +11,7 @@ class Gamepiece : public Actor
 public:
     Gamepiece(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates, piecetype type);
     ~Gamepiece();
-    piecetype return_piecetype() {return piecetype_;};
+    piecetype returnPiecetype() {return piecetype_;};
 
 private:
     piecetype piecetype_;

@@ -8,80 +8,80 @@ class testgamestatistics : public QObject
     Q_OBJECT
 
 private slots:
-    void test_gamestatistics_creation_values();
+    void testGamestatisticsCreationValues();
 
-    void test_change_points();
+    void testChangePoints();
 
-    void test_change_rage_positive_over_900();
-    void test_change_rage_negative();
-    void test_change_rage_positive();
+    void testChangeRagePositiveOver900();
+    void testChangeRageNegative();
+    void testChangeRagePositive();
 
-    void test_rage_decay();
+    void testRageDecay();
 
-    void test_morePassengers();
-    void test_passengerDied();
+    void testMorePassengers();
+    void testPassengerDied();
 
-    void test_reseting_and_removing_remaining_pedestrians();
+    void testResetingAndRemovingRemainingPedestrians();
 
-    void test_starting_new_nysse();
-    void test_removing_nysse();
-    void test_nysse_leaving();
+    void testStartingNewNysse();
+    void testRemovingNysse();
+    void testNysseLeaving();
 };
 
 
 
-void testgamestatistics::test_gamestatistics_creation_values()
+void testgamestatistics::testGamestatisticsCreationValues()
 {
     Gamestatistics stats(0, EASY);
-    QVERIFY(stats.return_rage() == 900);
-    QVERIFY(stats.return_points() == 0);
+    QVERIFY(stats.returnRage() == 900);
+    QVERIFY(stats.returnPoints() == 0);
 }
 
-void testgamestatistics::test_change_points()
+void testgamestatistics::testChangePoints()
 {
     Gamestatistics stats(0, EASY);
-    stats.change_points(100);
-    QVERIFY(stats.return_points() == 100);
+    stats.changePoints(100);
+    QVERIFY(stats.returnPoints() == 100);
 }
 
-void testgamestatistics::test_change_rage_positive_over_900()
+void testgamestatistics::testChangeRagePositiveOver900()
 {
     Gamestatistics stats(0, EASY);
-    QCOMPARE(stats.change_rage(900), int(160 - 900/6));
+    QCOMPARE(stats.changeRage(900), int(160 - 900/6));
 }
 
-void testgamestatistics::test_change_rage_negative()
+void testgamestatistics::testChangeRageNegative()
 {
     Gamestatistics stats(0, EASY);
-    QCOMPARE(stats.change_rage(-100), int(160 - 800/6));
+    QCOMPARE(stats.changeRage(-100), int(160 - 800/6));
 }
 
-void testgamestatistics::test_change_rage_positive()
+void testgamestatistics::testChangeRagePositive()
 {
     Gamestatistics stats(0, EASY);
-    stats.change_rage(-300);
-    QCOMPARE(stats.change_rage(100), int(160 - 700/6));
+    stats.changeRage(-300);
+    QCOMPARE(stats.changeRage(100), int(160 - 700/6));
 }
 
-void testgamestatistics::test_rage_decay()
+void testgamestatistics::testRageDecay()
 {
     Gamestatistics stats(0, EASY);
-    stats.rage_decay();
-    stats.rage_decay();
-    stats.rage_decay();
-    stats.rage_decay();
-    stats.rage_decay();
-    QCOMPARE(stats.return_rage(), 895);
+    stats.rageDecay();
+    stats.rageDecay();
+    stats.rageDecay();
+    stats.rageDecay();
+    stats.rageDecay();
+    QCOMPARE(stats.returnRage(), 895);
 }
 
-void testgamestatistics::test_morePassengers()
+void testgamestatistics::testMorePassengers()
 {
     Gamestatistics stats(0, EASY);
     stats.morePassengers(3);
     QCOMPARE(stats.returnPassengers(), 3);
 }
 
-void testgamestatistics::test_passengerDied()
+void testgamestatistics::testPassengerDied()
 {
     Gamestatistics stats(0, EASY);
     stats.morePassengers(5);
@@ -89,20 +89,20 @@ void testgamestatistics::test_passengerDied()
     QCOMPARE(stats.returnPassengers(), 3);
 }
 
-void testgamestatistics::test_reseting_and_removing_remaining_pedestrians()
+void testgamestatistics::testResetingAndRemovingRemainingPedestrians()
 {
     Gamestatistics stats(0, EASY);
-    stats.reset_remaining_pedestrians(10);
-    QCOMPARE(stats.return_pedestrians(), 10);
-    stats.pedestrian_removed();
-    QCOMPARE(stats.return_pedestrians(), 9);
-    stats.pedestrian_removed();
-    stats.pedestrian_removed();
-    stats.pedestrian_removed();
-    QCOMPARE(stats.return_pedestrians(), 6);
+    stats.resetRemainingPedestrians(10);
+    QCOMPARE(stats.returnRemainingPedestrians(), 10);
+    stats.removePedestrian();
+    QCOMPARE(stats.returnRemainingPedestrians(), 9);
+    stats.removePedestrian();
+    stats.removePedestrian();
+    stats.removePedestrian();
+    QCOMPARE(stats.returnRemainingPedestrians(), 6);
 }
 
-void testgamestatistics::test_starting_new_nysse()
+void testgamestatistics::testStartingNewNysse()
 {
     Gamestatistics stats(0, EASY);
     stats.newNysse();
@@ -113,7 +113,7 @@ void testgamestatistics::test_starting_new_nysse()
     QCOMPARE(stats.returnTotalNysses(), 4);
 }
 
-void testgamestatistics::test_removing_nysse()
+void testgamestatistics::testRemovingNysse()
 {
     Gamestatistics stats(0, EASY);
     stats.nysseRemoved();
@@ -124,7 +124,7 @@ void testgamestatistics::test_removing_nysse()
     QCOMPARE(stats.returnRemovedNysses(), 4);
 }
 
-void testgamestatistics::test_nysse_leaving()
+void testgamestatistics::testNysseLeaving()
 {
     Gamestatistics stats(0, EASY);
     stats.nysseLeft();

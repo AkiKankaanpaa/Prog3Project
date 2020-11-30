@@ -3,14 +3,16 @@
 #include <QGraphicsRectItem>
 #include "actor.h"
 
+enum powerup {RAGE_IMMUNITY, POINTS_MULTIPLIER, DISEASE_IMMUNITY};
+
 class Bus : public Actor
 {
 public:
     Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates);
     ~Bus();
-    void set_direction(direction dir);
-    direction return_direction();
-    std::pair<int, int> determine_movement();
+    void setDirection(direction dir);
+    direction returnDirection();
+    std::pair<int, int> determineMovement();
 
 private:
     direction current_direction_;

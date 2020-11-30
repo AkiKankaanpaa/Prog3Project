@@ -2,7 +2,7 @@
 #define STARTUPWINDOW_H
 
 #include <QDialog>
-#include "errorbox.h"
+#include "errorwindow.h"
 
 namespace Ui {
 class StartupWindow;
@@ -17,7 +17,7 @@ public:
     ~StartupWindow();
 
 signals:
-    void difficulty_signal(int difficulty);
+    void difficultySignal(int difficulty);
 
 private slots:
     void on_startButton_clicked();

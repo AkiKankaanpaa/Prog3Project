@@ -12,9 +12,9 @@ Actor::~Actor()
     ;
 }
 
-bool Actor::can_move(direction dir)
+bool Actor::canMove(direction dir)
 {
-    auto current_coordinates = return_coordinates();
+    auto current_coordinates = returnCoordinates();
 
     if(dir == RIGHT){
         current_coordinates.first += 10;
@@ -34,12 +34,12 @@ bool Actor::can_move(direction dir)
 
 }
 
-std::pair<int, int> Actor::return_coordinates()
+std::pair<int, int> Actor::returnCoordinates()
 {
     return std::pair<int, int>(static_cast<int>(gametoken_->x()), static_cast<int>(gametoken_->y()));
 }
 
-QGraphicsRectItem *Actor::return_self()
+QGraphicsRectItem *Actor::returnSelf()
 {
     return gametoken_;
 }

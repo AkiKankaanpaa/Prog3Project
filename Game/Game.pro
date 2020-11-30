@@ -8,7 +8,7 @@ CONFIG += c++14
 SOURCES += \
     actor.cpp \
     bus.cpp \
-    errorbox.cpp \
+    errorwindow.cpp \
     gamepiece.cpp \
     gamestatistics.cpp \
     main.cc \
@@ -40,14 +40,14 @@ else:unix: PRE_TARGETDEPS += \
     $$OUT_PWD/../Course/CourseLib/libCourseLib.a
 
 FORMS += \
-    errorbox.ui \
+    errorwindow.ui \
     mainwindow.ui \
     startupwindow.ui
 
 HEADERS += \
     actor.h \
     bus.h \
-    errorbox.h \
+    errorwindow.h \
     gamepiece.h \
     gamestatistics.h \
     mainwindow.h \

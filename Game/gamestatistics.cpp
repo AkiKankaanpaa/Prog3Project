@@ -30,7 +30,7 @@ Gamestatistics::~Gamestatistics()
 
 }
 
-int Gamestatistics::change_rage(int change)
+int Gamestatistics::changeRage(int change)
 {
     if ((current_rage_ + change) > 900) {
         current_rage_ = 900;
@@ -41,9 +41,21 @@ int Gamestatistics::change_rage(int change)
     return 160 - current_rage_/6;
 }
 
-int Gamestatistics::rage_decay()
+int Gamestatistics::rageDecay()
 {
     current_rage_ -= rage_decay_amount_;
     return 160 - current_rage_/6;
+}
+
+void Gamestatistics::doesDiseaseSpread()
+{
+    srand(time(0));
+    int dead_passengers = 0;
+    for (int i = 0; i < current_passengers_; ++i) {
+        if ((1 + rand() % 10) < 3) {
+            ++dead_passengers;
+        }
+    }
+    passengerDied(dead_passengers);
 }
 

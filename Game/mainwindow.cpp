@@ -38,16 +38,18 @@ MainWindow::MainWindow(QWidget *parent) :
     gamescene_ = new QGraphicsScene(this);
     ui->MapView->setScene(gamescene_);
     gamescene_->setSceneRect(0,0,800,800);
+
     ui->MapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->MapView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     gamescene_->addPixmap(gameimages_->at(RUNNING));
 
     startup_ = new StartupWindow(this);
     startup_->show();
     connect(startup_, &StartupWindow::rejected, this, &MainWindow::close);
-    connect(startup_, &StartupWindow::difficulty_signal, this, &MainWindow::create_game);
+    connect(startup_, &StartupWindow::difficultySignal, this, &MainWindow::createGame);
 
-    connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tick_handler()));
+    connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tickHandler()));
 }
 
 MainWindow::~MainWindow()
@@ -58,7 +60,7 @@ MainWindow::~MainWindow()
     delete gamestats_;
 }
 
-void MainWindow::read_coordinates()
+void MainWindow::readCoordinates()
 {
     QFile file(":/coordinatestxt/tamperecoordinates.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -68,12 +70,12 @@ void MainWindow::read_coordinates()
         while (!stream.atEnd()) {
             QString line = stream.readLine();
             std::string x_line = line.toStdString();
-            insert_coordinates(x_line);
+            insertCoordinates(x_line);
         }
     }
 }
 
-void MainWindow::insert_coordinates(std::string x_line)
+void MainWindow::insertCoordinates(std::string x_line)
 {
     std::string x = x_line.substr(0, x_line.find(":"));
     x_line.erase(x_line.begin(), x_line.begin()+x.size()+1);
@@ -93,25 +95,27 @@ void MainWindow::insert_coordinates(std::string x_line)
     legal_coordinates_->insert({stoi(x), y_vec});
 }
 
-void MainWindow::create_game(int chosen_difficulty)
+void MainWindow::createGame(int chosen_difficulty)
 {
+    gamescene_->addPixmap(gameimages_->at(RUNNING));
+
     difficulty diff = (difficulty)chosen_difficulty;
 
     game_running_ = true;
-    read_coordinates();
+    readCoordinates();
 
     QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
     playertoken->setPos(40, 40);
     player_ = new Bus(playertoken, legal_coordinates_);
     playertoken->setBrush(Qt::black);
 
-    set_difficulty_settings(diff);
+    setDifficultySettings(diff);
 }
 
-void MainWindow::set_difficulty_settings(difficulty chosen_difficulty)
+void MainWindow::setDifficultySettings(difficulty chosen_difficulty)
 {
-    int maskrefuser_amount = spawn_gamepieces(chosen_difficulty);
-    gamestats_ = new Gamestatistics(maskrefuser_amount, EXTREMELY_EASY);
+    int total_pedestrians = spawnGamepieces(chosen_difficulty);
+    gamestats_ = new Gamestatistics(total_pedestrians, chosen_difficulty);
 
     switch (chosen_difficulty)  {
         case EXTREMELY_EASY: {
@@ -133,14 +137,14 @@ void MainWindow::set_difficulty_settings(difficulty chosen_difficulty)
     }
 }
 
-void MainWindow::check_pedestrian_collision()
+void MainWindow::checkPedestrianCollision()
 {
     std::vector<unsigned int> gamepieces = {};
-    std::pair<int,int> next_position = player_->determine_movement();
+    std::pair<int,int> next_position = player_->determineMovement();
     int ragemeter_y;
 
     for(unsigned int i = 0; i<list_of_gamepieces_.size(); ++i){
-        if(list_of_gamepieces_.at(i)->return_coordinates() == next_position){
+        if(list_of_gamepieces_.at(i)->returnCoordinates() == next_position){
             gamepieces.push_back(i);
         }
     }
@@ -150,65 +154,77 @@ void MainWindow::check_pedestrian_collision()
     if (gamepieces.size() > 0) {
         for(unsigned int i : gamepieces){
 
-            enum::piecetype current_piecetype = list_of_gamepieces_.at(i)->return_piecetype();
-
-            qDebug() << QString::number(current_piecetype);
+            enum::piecetype current_piecetype = list_of_gamepieces_.at(i)->returnPiecetype();
 
             int points = ui->lcdPoints->intValue();
 
             switch(current_piecetype) {
                 case MASKLESS: {
-                    qDebug() << "Maskless";
                     ui->lcdPoints->display(points + 100);
-                    gamestats_->change_points(100);
-                    ragemeter_y = gamestats_->change_rage(100);
+                    gamestats_->changePoints(100);
+
+                    ragemeter_y = gamestats_->changeRage(200);
                     ragemeter_->setPos(940, ragemeter_y);
-                    gamestats_->pedestrian_removed();
+
+                    gamestats_->removePedestrian();
+
+                    if (gamestats_->returnPassengers() > 0) {
+                        gamestats_->doesDiseaseSpread();
+                    }
                     break;
                 }
                 case MASKED: {
-                    qDebug() << "Masked";
-                    ragemeter_y = gamestats_->change_rage(-30);
+                    ragemeter_y = gamestats_->changeRage(-50);
                     ragemeter_->setPos(940, ragemeter_y);
-                    gamestats_->pedestrian_removed();
+
+                    gamestats_->removePedestrian();
                     gamestats_->morePassengers(1);
+
+                    if (gamestats_->returnRemainingPedestrians() == 0) {
+                        endGame(VICTORY);
+                    }
                     break;
                 }
                 case POLICE: {
-                    qDebug() << "Police";
                     ui->lcdPoints->display(points - 250);
-                    gamestats_->change_points(-250);
-                    ragemeter_y = gamestats_->change_rage(300);
+                    gamestats_->changePoints(-250);
+
+                    ragemeter_y = gamestats_->changeRage(300);
                     ragemeter_->setPos(940, ragemeter_y);
+
                     break;
                 }
                 case POWERUP: {
-                    qDebug() << "Powerup";
                     ui->lcdPoints->display(points + 500);
-                    gamestats_->change_points(100);
+                    gamestats_->changePoints(100);
+
+                    if (gamestats_->returnRemainingPedestrians() == 0) {
+                        endGame(VICTORY);
+                    }
+
                     break;
                 }
             }
-
-            qDebug() << "Current rage: " << QString::number(gamestats_->return_rage());
-
-            gamescene_->removeItem(list_of_gamepieces_.at(i)->return_self());
-            delete list_of_gamepieces_.at(i)->return_self();
-            delete list_of_gamepieces_.at(i);
-            list_of_gamepieces_.erase(list_of_gamepieces_.begin() + i);
+            if (game_running_) {
+                gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());
+                delete list_of_gamepieces_.at(i)->returnSelf();
+                delete list_of_gamepieces_.at(i);
+                list_of_gamepieces_.erase(list_of_gamepieces_.begin() + i);
+            }
         }
     }
 }
 
-void MainWindow::tick_handler()
+void MainWindow::tickHandler()
 {
-    direction dir = player_->return_direction();
+    direction dir = player_->returnDirection();
     player_->move(dir, 1);
-    int ragemeter_y = gamestats_->rage_decay();
-    qDebug() << QString::number(gamestats_->return_rage());
+
+    int ragemeter_y = gamestats_->rageDecay();
     ragemeter_->setPos(940, ragemeter_y);
-    if (gamestats_->return_rage() <= 0) {
-       end_game(RAGE);
+
+    if (gamestats_->returnRage() <= 0) {
+       endGame(RAGE);
     }
 
     ++current_tick_;
@@ -216,21 +232,18 @@ void MainWindow::tick_handler()
     if (current_tick_ == 10) {
         current_tick_ = 0;
 
-        if (player_->can_move(queued_direction_)) {
-            player_->set_direction(queued_direction_);
-            check_pedestrian_collision();
+        if (player_->canMove(queued_direction_)) {
+            player_->setDirection(queued_direction_);
+            checkPedestrianCollision();
         } else {
-            end_game(CRASH);
+            endGame(CRASH);
         }
     }
 }
 
-int MainWindow::spawn_gamepieces(difficulty diff)
+int MainWindow::spawnGamepieces(difficulty diff)
 {
-    int powerup_th;
-    int police_th;
-    int maskless_th;
-    int mask_th;
+    int powerup_th, police_th, maskless_th, mask_th;
     
     switch (diff)  {
         case EXTREMELY_EASY:{
@@ -256,10 +269,10 @@ int MainWindow::spawn_gamepieces(difficulty diff)
             break;
         }
         case UNEASY: {
-            powerup_th = 1;
-            police_th = 2;
-            maskless_th = 6;
-            mask_th = 10;
+            powerup_th = 10;
+            police_th = 10;
+            maskless_th =10;
+            mask_th =10;
             break;
         }
     }
@@ -275,7 +288,6 @@ int MainWindow::spawn_gamepieces(difficulty diff)
             current_randint = 1 + (rand() % 100);
 
             if (current_randint <= powerup_th) {
-                qDebug() << "Powerup";
                 QGraphicsRectItem* pedestrian_object = gamescene_->addRect(0,0,10,10);
                 pedestrian_object->setPos(x.first, y);
                 pedestrian_object->setBrush(Qt::yellow);
@@ -283,7 +295,6 @@ int MainWindow::spawn_gamepieces(difficulty diff)
                 list_of_gamepieces_.push_back(pedestrian);
             }
             else if (current_randint <= police_th) {
-                qDebug() << "Police";
                 QGraphicsRectItem* pedestrian_object = gamescene_->addRect(0,0,10,10);
                 pedestrian_object->setPos(x.first, y);
                 pedestrian_object->setBrush(Qt::blue);
@@ -291,7 +302,6 @@ int MainWindow::spawn_gamepieces(difficulty diff)
                 list_of_gamepieces_.push_back(pedestrian);
             }
             else if (current_randint <= maskless_th){
-                qDebug() << "Maskless";
                 QGraphicsRectItem* pedestrian_object = gamescene_->addRect(0,0,10,10);
                 pedestrian_object->setPos(x.first, y);
                 pedestrian_object->setBrush(Qt::red);
@@ -300,7 +310,6 @@ int MainWindow::spawn_gamepieces(difficulty diff)
                 ++game_end_amount;
 
             } else if (current_randint <= mask_th){
-                qDebug() << "Mask";
                 QGraphicsRectItem* pedestrian_object = gamescene_->addRect(0,0,10,10);
                 pedestrian_object->setPos(x.first, y);
                 pedestrian_object->setBrush(Qt::green);
@@ -316,7 +325,7 @@ int MainWindow::spawn_gamepieces(difficulty diff)
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
     if(game_running_){
-        direction current_direction = player_->return_direction();
+        direction current_direction = player_->returnDirection();
         switch (event->key())  {
             case Qt::Key_W:
                 if (current_direction != DOWN) {
@@ -342,21 +351,27 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
                 }
                 break;
 
+            case Qt::Key_R:
+                if (game_running_) {
+                    ;
+                }
+
             default:
                 ;
         }
     }
 }
 
-void MainWindow::end_game(gamestate condition)
+void MainWindow::endGame(gamestate condition)
 {
     game_running_ = false;
     tick_timer_->stop();
+
     gamescene_->addPixmap(gameimages_->at(condition));
-    int size = list_of_gamepieces_.size() - 1;
-    for(int i = size; i >= 0; i--){
-        gamescene_->removeItem(list_of_gamepieces_.at(i)->return_self());
-        delete list_of_gamepieces_.at(i)->return_self();
+
+    for(int i = (list_of_gamepieces_.size() - 1); i >= 0; i--){
+        gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());
+        delete list_of_gamepieces_.at(i)->returnSelf();
         delete list_of_gamepieces_.at(i);
         list_of_gamepieces_.erase(list_of_gamepieces_.begin() + i);
     }
