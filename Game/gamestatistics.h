@@ -15,6 +15,9 @@ public:
     int returnPoints() {return current_points_;};
     void changePoints(int change) {current_points_ += change;};
 
+    int returnTotalPoints() {return current_points_;};
+    void changeTotalPoints(int change) {current_points_ += change;};
+
     int returnRage() {return current_rage_;};
     int changeRage(int change);
 
@@ -31,20 +34,19 @@ public:
 
     void newNysse() {++total_nysses_;};
     int returnTotalNysses() {return total_nysses_;};
+
     void nysseRemoved() {++lost_nysses_;};
     int returnRemovedNysses() {return lost_nysses_;};
+
     void nysseLeft() {++remaining_nysses_;};
     int returnLostNysses() {return remaining_nysses_;};
-    void setGameDifficulty(difficulty dif);
 
-    void changePlayer(std::string player_name) {current_player_ = player_name;};
-    std::string returnPlayer() {return current_player_;};
+    void setGameDifficulty(difficulty dif);
 
 private:
     int current_points_;
     int current_rage_;
     int current_passengers_;
-    std::string current_player_;
 
     int rage_decay_amount_;
     int remaining_pedestrians_;
@@ -53,6 +55,7 @@ private:
     int remaining_nysses_;
     int lost_nysses_;
 
+    int total_points_;
 };
 
 #endif // GAMESTATISTICS_H

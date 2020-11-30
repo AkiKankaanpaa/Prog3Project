@@ -105,13 +105,11 @@ void MainWindow::insertHighscores(std::string x_line)
     auto pair = std::make_pair(x, stoi(x_line));
 }
 
-void MainWindow::createGame(int chosen_difficulty, QString name)
+void MainWindow::createGame(int chosen_difficulty)
 {
     gamescene_->addPixmap(gameimages_->at(RUNNING));
 
     difficulty diff = (difficulty)chosen_difficulty;
-
-    gamestats_->changePlayer(name.toStdString());
 
     game_running_ = true;
 
@@ -125,6 +123,10 @@ void MainWindow::createGame(int chosen_difficulty, QString name)
         playertoken->setPos(40, 40);
         player_ = new Bus(playertoken, legal_coordinates_);
         playertoken->setBrush(Qt::black);
+        ui->totalGameValue->setText("0");
+        ui->lostGameValue->setText("0");
+        ui->wonGameValue->setText("0");
+        ui->totalPointValue->setText("0");
     }
     if(gamestats_->returnTotalNysses() > 0){
         delete player_;
@@ -140,8 +142,13 @@ void MainWindow::createGame(int chosen_difficulty, QString name)
         player_->returnSelf()->setPos(40,40);
         player_->returnSelf()->setBrush(Qt::black);
     }
+    gamestats_->changePoints(-gamestats_->returnPoints());
+
     setDifficultySettings(diff);
-    gamestats_->newNysse();
+
+    ui->pedestrianValue->setText(QString::number(gamestats_->returnRemainingPedestrians()));
+    ui->passengerValue->setText("0");
+    ui->lcdPoints->display(0);
 }
 
 void MainWindow::setDifficultySettings(difficulty chosen_difficulty)
@@ -195,6 +202,9 @@ void MainWindow::checkPedestrianCollision()
                     ui->lcdPoints->display(points + 100);
                     gamestats_->changePoints(100);
 
+                    gamestats_->changeTotalPoints(100);
+                    ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
+
                     ragemeter_y = gamestats_->changeRage(200);
                     ragemeter_->setPos(940, ragemeter_y);
 
@@ -203,6 +213,13 @@ void MainWindow::checkPedestrianCollision()
                     if (gamestats_->returnPassengers() > 0) {
                         gamestats_->doesDiseaseSpread();
                     }
+
+                    ui->pedestrianValue
+                            ->setText(QString::number(gamestats_->returnRemainingPedestrians()));
+
+                    ui->passengerValue
+                            ->setText(QString::number(gamestats_->returnPassengers()));
+
                     break;
                 }
                 case MASKED: {
@@ -211,6 +228,12 @@ void MainWindow::checkPedestrianCollision()
 
                     gamestats_->removePedestrian();
                     gamestats_->morePassengers(1);
+
+                    ui->pedestrianValue
+                            ->setText(QString::number(gamestats_->returnRemainingPedestrians()));
+
+                    ui->passengerValue
+                            ->setText(QString::number(gamestats_->returnPassengers()));
 
                     if (gamestats_->returnRemainingPedestrians() == 0) {
                         endGame(VICTORY);
@@ -221,6 +244,9 @@ void MainWindow::checkPedestrianCollision()
                     ui->lcdPoints->display(points - 250);
                     gamestats_->changePoints(-250);
 
+                    gamestats_->changeTotalPoints(-250);
+                    ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
+
                     ragemeter_y = gamestats_->changeRage(300);
                     ragemeter_->setPos(940, ragemeter_y);
 
@@ -228,11 +254,9 @@ void MainWindow::checkPedestrianCollision()
                 }
                 case POWERUP: {
                     ui->lcdPoints->display(points + 500);
-                    gamestats_->changePoints(100);
-
-                    if (gamestats_->returnRemainingPedestrians() == 0) {
-                        endGame(VICTORY);
-                    }
+                    gamestats_->changePoints(500);
+                    gamestats_->changeTotalPoints(500);
+                    ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
 
                     break;
                 }
@@ -395,8 +419,6 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
                 if(gamestats_->returnTotalNysses() > 0){
                     startup_->show();
                     gamestats_->changeRage(900);
-                    gamestats_->changePoints(-gamestats_->returnPoints());
-                    ui->lcdPoints->display(0);
                 }
         default:
             ;
@@ -409,6 +431,20 @@ void MainWindow::endGame(gamestate condition)
     game_running_ = false;
     tick_timer_->stop();
     gamescene_->addPixmap(gameimages_->at(condition));
+
+    gamestats_->newNysse();
+    ui->totalGameValue->setText(QString::number(gamestats_->returnTotalNysses()));
+
+    if (condition == VICTORY) {
+        gamestats_->nysseLeft();
+        ui->wonGameValue->setText(QString::number(gamestats_->returnLostNysses()));
+        gamestats_->changePoints(gamestats_->returnPassengers() * 150);
+    } else {
+        gamestats_->nysseRemoved();
+        ui->lostGameValue->setText(QString::number(gamestats_->returnRemovedNysses()));
+        gamestats_->changePoints(gamestats_->returnPassengers() * -50);
+        ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
+    }
 
     for(int i = (list_of_gamepieces_.size() - 1); i >= 0; i--){
         gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());
