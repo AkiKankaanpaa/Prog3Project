@@ -7,11 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     gameimages_(new std::map<gamestate, QPixmap>),
     player_(nullptr),
+    scoreboard_(new std::map<std::string, int>),
     tick_timer_(new QTimer(this)),
     current_tick_(0),
     queued_direction_(RIGHT),
     game_running_(false)
-
 {
     ui->setupUi(this);
     QPixmap infolabel(":/images/infolabel.png");
@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     startup_->show();
     connect(startup_, &StartupWindow::rejected, this, &MainWindow::close);
     connect(startup_, &StartupWindow::difficultySignal, this, &MainWindow::createGame);
+    connect(this, &MainWindow::highscoreSignal, this, &MainWindow::createHighscoreWindow);
 
     connect(tick_timer_, SIGNAL(timeout()), this, SLOT(tickHandler()));
 }
@@ -64,13 +65,32 @@ void MainWindow::readCoordinates()
 {
     QFile file(":/txtfiles/tamperecoordinates.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "didnt read";
-    } else {
+        ;
+    }
+    else
+    {
         QTextStream stream(&file);
         while (!stream.atEnd()) {
             QString line = stream.readLine();
             std::string x_line = line.toStdString();
             insertCoordinates(x_line);
+        }
+    }
+}
+
+void MainWindow::readHighscores()
+{
+    QFile file(":/txtfiles/highscores.txt");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        ;
+    }
+    else
+    {
+        QTextStream stream(&file);
+        while (!stream.atEnd()) {
+            QString line = stream.readLine();
+            std::string x_line = line.toStdString();
+            insertHighscores(x_line);
         }
     }
 }
@@ -95,6 +115,13 @@ void MainWindow::insertCoordinates(std::string x_line)
     legal_coordinates_->insert({stoi(x), y_vec});
 }
 
+void MainWindow::insertHighscores(std::string x_line)
+{
+    std::string x = x_line.substr(0, x_line.find(":"));
+    x_line.erase(x_line.begin(), x_line.begin()+x.size()+1);
+    scoreboard_->insert({x, stoi(x_line)});
+}
+
 void MainWindow::createGame(int chosen_difficulty)
 {
     gamescene_->addPixmap(gameimages_->at(RUNNING));
@@ -103,6 +130,7 @@ void MainWindow::createGame(int chosen_difficulty)
 
     game_running_ = true;
     readCoordinates();
+    readHighscores();
 
     QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
     playertoken->setPos(40, 40);
@@ -110,6 +138,13 @@ void MainWindow::createGame(int chosen_difficulty)
     playertoken->setBrush(Qt::black);
 
     setDifficultySettings(diff);
+}
+
+void MainWindow::createHighscoreWindow()
+{
+
+    Highscorewindow* hswindow = new Highscorewindow(nullptr, scoreboard_);
+    hswindow->show();
 }
 
 void MainWindow::setDifficultySettings(difficulty chosen_difficulty)
@@ -352,7 +387,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
                 break;
 
             case Qt::Key_R:
-            break;
+                break;
 
             default:
                 ;
@@ -375,3 +410,8 @@ void MainWindow::endGame(gamestate condition)
     }
 }
 
+
+void MainWindow::on_highscoreButton_clicked()
+{
+    emit highscoreSignal();
+}

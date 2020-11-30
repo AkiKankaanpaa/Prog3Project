@@ -22,6 +22,8 @@ signals:
 private slots:
     void on_startButton_clicked();
 
+    void on_cancelButton_clicked();
+
 private:
     Ui::StartupWindow *ui;
 };

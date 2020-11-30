@@ -6,6 +6,7 @@
 #include "gamestatistics.h"
 #include "startupwindow.h"
 #include "errorwindow.h"
+#include "highscorewindow.h"
 
 #include <QMainWindow>
 #include <QLabel>
@@ -48,13 +49,21 @@ public:
 
 public slots:
     void createGame(int chosen_difficulty);
+    void createHighscoreWindow();
+
+signals:
+    void highscoreSignal();
 
 private slots:
     void tickHandler();
 
+    void on_highscoreButton_clicked();
+
 private:
     void readCoordinates();
+    void readHighscores();
     void insertCoordinates(std::string x_line);
+    void insertHighscores(std::string x_line);
 
     int spawnGamepieces(difficulty chosen_difficulty);
 
@@ -77,6 +86,8 @@ private:
     Bus *player_;
 
     std::vector<Gamepiece*> list_of_gamepieces_;
+
+    std::map<std::string, int>* scoreboard_;
 
     QTimer* tick_timer_;
     int current_tick_;

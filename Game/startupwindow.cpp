@@ -28,3 +28,8 @@ void StartupWindow::on_startButton_clicked()
         nameerror->show();
     }
 }
+
+void StartupWindow::on_cancelButton_clicked()
+{
+    emit rejected();
+}

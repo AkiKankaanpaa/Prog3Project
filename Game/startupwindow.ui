@@ -475,17 +475,17 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="highscoreButton">
+  <widget class="QPushButton" name="cancelButton">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>120</x>
      <y>130</y>
-     <width>101</width>
+     <width>61</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>View Highscores</string>
+    <string>Cancel</string>
    </property>
   </widget>
   <widget class="QPushButton" name="startButton">
