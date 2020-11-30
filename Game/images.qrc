@@ -4,6 +4,7 @@
         <file>crash.png</file>
         <file>infolabel.png</file>
         <file>victory.png</file>
+        <file>gnome.png</file>
         <file>rage.png</file>
     </qresource>
 </RCC>

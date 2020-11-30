@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap infolabel(":/images/infolabel.png");
     ui->infoLabel->setPixmap(infolabel);
     QPixmap running(":/images/map.png");
+    QPixmap goblin(":/images/gnome.png");
     QPixmap crash(":/images/crash.png");
     QPixmap rage(":/images/rage.png");
     QPixmap victory(":/images/victory.png");
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gameimages_->insert({CRASH, crash});
     gameimages_->insert({RAGE, rage});
     gameimages_->insert({VICTORY, victory});
+    gameimages_->insert({GNOMED, goblin});
 
     ragescene_ = new QGraphicsScene(this);
     ui->rageMeter->setScene(ragescene_);
@@ -194,7 +196,7 @@ void MainWindow::checkPedestrianCollision()
     if(player_->returnCoordinates() == gnome_->returnCoordinates()){
         endGame(GNOMED);
     }
-    if (gamepieces.size() > 0) {
+    else if (gamepieces.size() > 0) {
         for(unsigned int i : gamepieces){
 
             enum::piecetype current_piecetype = list_of_gamepieces_.at(i)->returnPiecetype();
@@ -430,6 +432,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 
 void MainWindow::endGame(gamestate condition)
 {
+    current_tick_ = 0;
     game_running_ = false;
     tick_timer_->stop();
     gamescene_->addPixmap(gameimages_->at(condition));
