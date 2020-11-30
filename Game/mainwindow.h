@@ -6,6 +6,7 @@
 #include "gamestatistics.h"
 #include "startupwindow.h"
 #include "errorwindow.h"
+#include "gardengnome.h"
 
 #include <QMainWindow>
 #include <QLabel>
@@ -77,6 +78,7 @@ private:
     std::map<gamestate, QPixmap>* gameimages_;
 
     Bus *player_;
+    GardenGnome *gnome_;
     std::vector<Gamepiece*> list_of_gamepieces_;
 
     QTimer* tick_timer_;

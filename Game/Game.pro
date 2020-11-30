@@ -11,6 +11,7 @@ SOURCES += \
     errorwindow.cpp \
     gamepiece.cpp \
     gamestatistics.cpp \
+    gardengnome.cpp \
     main.cc \
     mainwindow.cpp \
     startupwindow.cpp
@@ -50,6 +51,7 @@ HEADERS += \
     errorwindow.h \
     gamepiece.h \
     gamestatistics.h \
+    gardengnome.h \
     mainwindow.h \
     startupwindow.h
 

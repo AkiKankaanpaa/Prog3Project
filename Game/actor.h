@@ -21,6 +21,7 @@ public:
 private:
     std::map<int, std::vector<int>>* legal_coordinates_;
     QGraphicsRectItem* gametoken_;
+
 };
 
 #endif // ACTOR_H

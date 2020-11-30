@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete gnome_;
     delete player_;
     delete ui;
     delete legal_coordinates_;
@@ -116,6 +117,10 @@ void MainWindow::createGame(int chosen_difficulty, QString name)
 
     if(gamestats_->returnTotalNysses() == 0){
         readCoordinates();
+        QGraphicsRectItem* gnomerect = gamescene_->addRect(0,0,10,10);
+        gnomerect->setPos(600,40);
+        gnome_ = new GardenGnome(gnomerect, legal_coordinates_);
+        gnomerect->setBrush(Qt::magenta);
         QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
         playertoken->setPos(40, 40);
         player_ = new Bus(playertoken, legal_coordinates_);
@@ -123,6 +128,11 @@ void MainWindow::createGame(int chosen_difficulty, QString name)
     }
     if(gamestats_->returnTotalNysses() > 0){
         delete player_;
+        delete gnome_;
+        QGraphicsRectItem* gnomerect = gamescene_->addRect(0,0,10,10);
+        gnomerect->setPos(600,40);
+        gnome_ = new GardenGnome(gnomerect, legal_coordinates_);
+        gnomerect->setBrush(Qt::magenta);
         QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
         playertoken->setPos(40, 40);
         player_ = new Bus(playertoken, legal_coordinates_);
@@ -239,12 +249,12 @@ void MainWindow::checkPedestrianCollision()
 
 void MainWindow::tickHandler()
 {
+    gnome_->run_away_if_can();
     direction dir = player_->returnDirection();
     player_->move(dir, 1);
 
     int ragemeter_y = gamestats_->rageDecay();
     ragemeter_->setPos(940, ragemeter_y);
-
     if (gamestats_->returnRage() <= 0) {
        endGame(RAGE);
     }
@@ -256,6 +266,7 @@ void MainWindow::tickHandler()
 
         if (player_->canMove(queued_direction_)) {
             player_->setDirection(queued_direction_);
+            gnome_->setDirection(queued_direction_);
             checkPedestrianCollision();
         } else {
             endGame(CRASH);
