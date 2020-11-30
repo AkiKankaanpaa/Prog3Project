@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/txtfiles">
         <file>tamperecoordinates.txt</file>
-        <file>highscores.txt</file>
     </qresource>
 </RCC>

@@ -1,8 +1,8 @@
 #include "gamestatistics.h"
 
 Gamestatistics::Gamestatistics() :
-    current_points_(0), current_rage_(900), current_passengers_(0), current_player_(""),
-    total_nysses_(0), remaining_nysses_(0), lost_nysses_(0)
+    current_points_(0), current_rage_(900), current_passengers_(0), total_nysses_(0),
+    remaining_nysses_(0), lost_nysses_(0), total_points_(0)
 {
 
 }

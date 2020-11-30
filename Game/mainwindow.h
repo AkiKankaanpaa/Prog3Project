@@ -48,7 +48,7 @@ public:
     void keyPressEvent(QKeyEvent* event) override;
 
 public slots:
-    void createGame(int chosen_difficulty, QString name);
+    void createGame(int chosen_difficulty);
 
 private slots:
     void tickHandler();
