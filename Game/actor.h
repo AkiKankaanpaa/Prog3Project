@@ -16,8 +16,6 @@ public:
     bool canMove(direction dir);
     std::pair<int, int> returnCoordinates();
     QGraphicsRectItem* returnSelf();
-
-public slots:
     void move(direction dir, int amount);
 
 private:

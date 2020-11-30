@@ -1,7 +1,7 @@
 #include "bus.h"
 
-Bus::Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates): Actor(gametoken, legal_coordinates),
-    current_direction_(RIGHT)
+Bus::Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates):
+    Actor(gametoken, legal_coordinates), current_direction_(RIGHT), current_powerup_(NONE)
 {
     ;
 }
@@ -9,16 +9,6 @@ Bus::Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_co
 Bus::~Bus()
 {
     ;
-}
-
-void Bus::setDirection(direction dir)
-{
-    current_direction_ = dir;
-}
-
-direction Bus::returnDirection()
-{
-    return current_direction_;
 }
 
 std::pair<int, int> Bus::determineMovement()

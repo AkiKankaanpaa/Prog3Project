@@ -56,5 +56,4 @@ HEADERS += \
 DISTFILES +=
 
 RESOURCES += \
-    coordinates.qrc \
     images.qrc
