@@ -12,8 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 {
     ui->setupUi(this);
-    QPixmap pix(":/images/kartta.png");
-
+    QPixmap infolabel(":/images/infolabel.png");
+    ui->infoLabel->setPixmap(infolabel);
     ragescene_ = new QGraphicsScene(this);
     ui->rageMeter->setScene(ragescene_);
     ragescene_->setSceneRect(940,10,40,150);
@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     scene_ = new QGraphicsScene(this);
     ui->MapView->setScene(scene_);
     scene_->setSceneRect(0,0,800,800);
-    scene_->addPixmap(pix);
     ui->MapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->MapView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     startup_ = new StartupWindow(this);
@@ -152,6 +151,8 @@ void MainWindow::increase_rage(int amount)
 
 void MainWindow::create_game()
 {
+    QPixmap pix(":/images/kartta.png");
+    scene_->addPixmap(pix);
     read_coordinates(1);
     spawn_pedestrians(5);
     player_ = scene_->addRect(0,0,10,10);
