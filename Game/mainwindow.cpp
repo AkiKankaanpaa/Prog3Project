@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     QPixmap infolabel(":/images/infolabel.png");
     ui->infoLabel->setPixmap(infolabel);
-
+    ui->highscoreButton->setDisabled(true);
     QPixmap running(":/images/map.png");
     QPixmap crash(":/images/crash.png");
     QPixmap rage(":/images/rage.png");
@@ -60,6 +60,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete legal_coordinates_;
     delete gamestats_;
+    delete scoreboard_;
+    delete gameimages_;
 }
 
 void MainWindow::readCoordinates()
@@ -126,23 +128,29 @@ void MainWindow::insertHighscores(std::string x_line)
 void MainWindow::createGame(int chosen_difficulty)
 {
     qDebug() << "at create game";
+    ui->highscoreButton->setDisabled(true);
     gamescene_->addPixmap(gameimages_->at(RUNNING));
 
     difficulty diff = (difficulty)chosen_difficulty;
 
     game_running_ = true;
-    readCoordinates();
     readHighscores();
 
     if(gamestats_->returnTotalNysses() == 0){
         readCoordinates();
+        QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
+        playertoken->setPos(40, 40);
+        player_ = new Bus(playertoken, legal_coordinates_);
+        playertoken->setBrush(Qt::black);
     }
-    QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
-    playertoken->setPos(40, 40);
-    player_ = new Bus(playertoken, legal_coordinates_);
-    playertoken->setBrush(Qt::black);
     if(gamestats_->returnTotalNysses() > 0){
-        player_->setDirection(RIGHT);
+        delete player_;
+        QGraphicsRectItem* playertoken = gamescene_->addRect(0,0,10,10);
+        playertoken->setPos(40, 40);
+        player_ = new Bus(playertoken, legal_coordinates_);
+        queued_direction_ = RIGHT;
+        player_->returnSelf()->setPos(40,40);
+        player_->returnSelf()->setBrush(Qt::black);
     }
     qDebug() << QString::number(gamestats_->returnTotalNysses());
     setDifficultySettings(diff);
@@ -406,7 +414,6 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
                     gamestats_->changeRage(900);
                     gamestats_->changePoints(-gamestats_->returnPoints());
                     ui->lcdPoints->display(0);
-                    queued_direction_ = RIGHT;
                 }
         default:
             ;
@@ -416,9 +423,9 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 
 void MainWindow::endGame(gamestate condition)
 {
+    ui->highscoreButton->setEnabled(true);
     game_running_ = false;
     tick_timer_->stop();
-    delete player_;
     gamescene_->addPixmap(gameimages_->at(condition));
 
     for(int i = (list_of_gamepieces_.size() - 1); i >= 0; i--){
