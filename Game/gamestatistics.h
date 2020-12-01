@@ -155,7 +155,8 @@ private:
      */
     int rage_decay_amount_;
     /**
-     * @brief remaining_pedestrians_: tracks the amount of objects left on the map
+     * @brief remaining_pedestrians_: tracks the amount of pedestrians that don't
+     * wear a mask and those that do wear a mask
      */
     int remaining_pedestrians_;
     /**
@@ -163,7 +164,7 @@ private:
      */
     int total_nysses_;
     /**
-     * @brief remaining_nysses_: tracks teh amount of rounds won
+     * @brief remaining_nysses_: tracks the amount of rounds won
      */
     int remaining_nysses_;
     /**
