@@ -13,7 +13,7 @@ StartupWindow::StartupWindow(QWidget *parent) :
     // Adding difficulties
     ui->difficultyBox->addItem("Extremely Easy");
     ui->difficultyBox->addItem("Easy");
-    ui->difficultyBox->addItem("Not So Easy");
+    ui->difficultyBox->addItem("Not Easy");
     ui->difficultyBox->addItem("Uneasy");
 }
 
