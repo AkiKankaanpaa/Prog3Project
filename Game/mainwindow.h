@@ -98,39 +98,73 @@ private:
      * @brief spawnGamepieces: Randomly spawns Gamepiece-type entities based on the parameters
      * determined by the chosen_difficulty, spreads them out, as well as adds pointers to them
      * vector list_of_gamepieces_
-     * @param chosen_difficulty
-     * @return
+     * @param chosen_difficulty: Difficulty enum, determines the spawnrates of the different gamepieces
+     * @return int game_end_amount, amount of both MASKLESS and MASKED entities created
+     * recorded to Gamestatistics variable current_passengers_
      */
     int spawnGamepieces(difficulty chosen_difficulty);
 
+    /**
+     * @brief setDifficultySettings: Changes the current difficulty
+     * @param chosen_difficulty: enum difficulty
+     */
     void setDifficultySettings(difficulty chosen_difficulty);
 
-    void checkPedestrianCollision();
+    /**
+     * @brief checkPedestrianCollision: checks whether or not the player_ would hit a gamepiece
+     * entity, if they do, removes it from the field and gains points, rage, or a buff
+     */
+    void checkGamepieceCollision();
 
+    /**
+     * @brief endGame: resets some variables back to either default values, deleted all gamepiece
+     * entities, changes the pixmap depending on the ending condition, stops the timer, and rewards end of game
+     * points
+     * @param condition: determines how the game was ended, and gives out end of game points as well as
+     * records it as either a win or a loss of the player in the gamestats_ object.
+     */
     void endGame(gamestate condition);
 
+    // Legal Coordinates as x vector<y>
     std::map<int, std::vector<int>>* legal_coordinates_;
 
     Ui::MainWindow *ui;
+    // Start of game setup window. Restarts this window by pressing r when game is not running
     StartupWindow *startup_;
 
+    // The main game area and the entities within it are held within this scene
     QGraphicsScene *gamescene_;
 
+    // Is used to display the rage meter in the top right
     QGraphicsScene *ragescene_;
+    // Is the moving part and shows the current amount of rage visually to the user
     QGraphicsRectItem *ragemeter_;
 
+    // Has the addresses of all of the required pixmaps
     std::map<gamestate, QPixmap>* gameimages_;
 
+    // Holds the unique Bus pointer which acts as the player
     Bus *player_;
+
+    // Holds the unique GardenGnome entity pointer
     GardenGnome *gnome_;
+
+    // Holds all of the gamepieces whilst game is running
     std::vector<Gamepiece*> list_of_gamepieces_;
 
+    // Timer used for movement of GardenGnome and Bus
     QTimer* tick_timer_;
+
+    // Current_Tick_ is used to determine when it is legal for the bus to turn (they may queue
+    // directions, but they are only updated every 10 pixels.
     int current_tick_;
+    // Holds the current queued direction, made with KeyPressEvents
     direction queued_direction_;
 
+    // Holds a large amount of data regarding the current game session / game
     Gamestatistics* gamestats_;
 
+    // Bool of whether or not the game is running at the moment
     bool game_running_;
 };
 

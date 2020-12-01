@@ -173,7 +173,7 @@ void MainWindow::setDifficultySettings(difficulty chosen_difficulty)
     }
 }
 
-void MainWindow::checkPedestrianCollision()
+void MainWindow::checkGamepieceCollision()
 {
     std::vector<unsigned int> gamepieces = {};
     std::pair<int,int> next_position = player_->determineMovement();
@@ -288,7 +288,7 @@ void MainWindow::tickHandler()
         if (player_->canMove(queued_direction_)) {
             player_->setDirection(queued_direction_);
             gnome_->setDirection(queued_direction_);
-            checkPedestrianCollision();
+            checkGamepieceCollision();
         } else {
             endGame(CRASH);
         }
