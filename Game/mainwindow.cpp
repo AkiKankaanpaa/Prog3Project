@@ -233,7 +233,9 @@ void MainWindow::checkGamepieceCollision()
 
                     ui->passengerValue
                             ->setText(QString::number(gamestats_->returnPassengers()));
-
+                    if (gamestats_->returnRemainingPedestrians() == 0) {
+                        endGame(VICTORY);
+                    }
                     break;
                 }
                 case MASKED: {
