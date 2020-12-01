@@ -13,21 +13,26 @@ std::pair<int, int> Bus::determineMovement()
     // Switchcase adds 10 in the appropriate coordinate to match where the bus will be
     // after 10 ticks, the direction is checked from current_direction_
     switch (returnDirection())  {
-        case RIGHT:
+
+        case RIGHT: {
             current_coordinates.first += 10;
             break;
+        }
 
-        case LEFT:
+        case LEFT: {
             current_coordinates.first -= 10;
             break;
+        }
 
-        case UP:
+        case UP: {
             current_coordinates.second -= 10;
             break;
+        }
 
-        case DOWN:
+        case DOWN: {
             current_coordinates.second += 10;
             break;
+        }
 
         default:
             ;

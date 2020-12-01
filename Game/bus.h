@@ -21,9 +21,9 @@ public:
     /**
      * @brief Bus: Constructor
      * @param gametoken: Acts as the rectangular object that is seeable within the game
-     * that represents the playable character.
-     * @param legal_coordinates: A pointer to a map, used by methods within the Actor
-     * class to determine if the next position to which the bus is moving to is legal.
+     * that represents the playable character. Owner by Actor
+     * @param legal_coordinates: Pointer of std::map<int, std::vector<int>>, has the int x values
+     * to correspond with vectors with legal y-values. Owned by Actor.
      */
     Bus(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates);
 

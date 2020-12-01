@@ -12,6 +12,12 @@ enum direction {RIGHT, LEFT, UP, DOWN};
 class MovingActor : public Actor
 {
 public:
+    /**
+     * @brief MovingActor: Constructor
+     * @param gametoken: QGraphicsRectItem pointer, works as the gamepiece on the gameboard.
+     * @param coordinates: : Pointer of std::map<int, std::vector<int>>, has the int x values
+     * to correspond with vectors with legal y-values. Owned by Actor.
+     */
     MovingActor(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* coordinates);
     virtual ~MovingActor();
 
