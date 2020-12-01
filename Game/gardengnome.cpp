@@ -3,13 +3,16 @@
 GardenGnome::GardenGnome(QGraphicsRectItem* gametoken, std::map<int, std::vector<int>>* legal_coordinates):
     MovingActor(gametoken, legal_coordinates)
 {
+    // Used by the runAwayIfCan method for a random seed
     srand(time(0));
 }
 
 void GardenGnome::runAwayIfCan()
 {
+    // If can move in the player's direction, moves there
     if(canMove(returnDirection())){
         move(returnDirection(), 10);
+    // Otherwise move in a random direction if possible
     } else {
         int random_dir = rand() % 4;
         if(canMove((direction)random_dir)){
