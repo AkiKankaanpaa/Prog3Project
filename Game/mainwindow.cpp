@@ -7,10 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     gameimages_(new std::map<gamestate, QPixmap>),
     player_(nullptr),
+    gnome_(nullptr),
     tick_timer_(new QTimer(this)),
     current_tick_(0),
     queued_direction_(RIGHT),
     game_running_(false)
+
 {
     ui->setupUi(this);
     QPixmap infolabel(":/images/infolabel.png");
@@ -56,6 +58,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    if(list_of_gamepieces_.size() > 0){
+        for(int i = (int) (list_of_gamepieces_.size() - 1); i >= 0; i--){
+            gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());
+            delete list_of_gamepieces_.at(i)->returnSelf();
+            delete list_of_gamepieces_.at(i);
+            list_of_gamepieces_.erase(list_of_gamepieces_.begin() + i);
+        }
+    }
     delete gnome_;
     delete player_;
     delete ui;
