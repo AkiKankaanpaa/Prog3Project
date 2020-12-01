@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     QPixmap infolabel(":/images/infolabel.png");
-    ui->infoLabel->setPixmap(infolabel);
     QPixmap running(":/images/map.png");
     QPixmap goblin(":/images/gnome.png");
     QPixmap crash(":/images/crash.png");
@@ -27,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gameimages_->insert({RAGE, rage});
     gameimages_->insert({VICTORY, victory});
     gameimages_->insert({GNOMED, goblin});
+    ui->infoLabel->setPixmap(infolabel);
 
     ragescene_ = new QGraphicsScene(this);
     ui->rageMeter->setScene(ragescene_);
@@ -40,10 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     gamescene_ = new QGraphicsScene(this);
     ui->MapView->setScene(gamescene_);
     gamescene_->setSceneRect(0,0,800,800);
-
     ui->MapView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->MapView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
     gamescene_->addPixmap(gameimages_->at(RUNNING));
 
     startup_ = new StartupWindow(this);
@@ -118,7 +116,7 @@ void MainWindow::createGame(int chosen_difficulty)
     difficulty diff = (difficulty)chosen_difficulty;
 
     game_running_ = true;
-
+    //only done on the first round
     if(gamestats_->returnTotalNysses() == 0){
         readCoordinates();
         QGraphicsRectItem* gnomerect = gamescene_->addRect(0,0,10,10);
@@ -134,6 +132,7 @@ void MainWindow::createGame(int chosen_difficulty)
         ui->wonGameValue->setText("0");
         ui->totalPointValue->setText("0");
     }
+    //game initialization after the 1st round
     if(gamestats_->returnTotalNysses() > 0){
         delete player_;
         delete gnome_;
@@ -262,7 +261,7 @@ void MainWindow::checkGamepieceCollision()
                     gamestats_->changeTotalPoints(-250);
                     ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
 
-                    ragemeter_y = gamestats_->changeRage(300);
+                    ragemeter_y = gamestats_->changeRage(450);
                     ragemeter_->setPos(940, ragemeter_y);
 
                     break;
@@ -288,6 +287,7 @@ void MainWindow::checkGamepieceCollision()
                     break;
                 }
             }
+            //removes objects that are no longer relevant to the game
             if (game_running_) {
                 gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());
                 delete list_of_gamepieces_.at(i)->returnSelf();
@@ -309,7 +309,6 @@ void MainWindow::tickHandler()
     }
     ++current_tick_;
     if (gamestats_->returnRage() <= 0) {
-       current_tick_ = 0;
        endGame(RAGE);
     } else if (current_tick_ == 10) {
         current_tick_ = 0;
@@ -461,12 +460,12 @@ void MainWindow::endGame(gamestate condition)
     gamestats_->newNysse();
     ui->totalGameValue->setText(QString::number(gamestats_->returnTotalNysses()));
 
-    if (condition == VICTORY) {
+    if (condition == VICTORY || condition == GNOMED) {
         gamestats_->nysseLeft();
         ui->wonGameValue->setText(QString::number(gamestats_->returnLostNysses()));
 
-        gamestats_->changePoints(gamestats_->returnPassengers() * 150);
-        gamestats_->changeTotalPoints(gamestats_->returnPassengers() * 150);
+        gamestats_->changePoints(gamestats_->returnPassengers() * 1000);
+        gamestats_->changeTotalPoints(gamestats_->returnPassengers() * 1000);
         ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
         ui->lcdPoints->display(QString::number(gamestats_->returnPoints()));
     } else {
@@ -478,6 +477,7 @@ void MainWindow::endGame(gamestate condition)
         ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
         ui->lcdPoints->display(QString::number(gamestats_->returnPoints()));
     }
+    //removes the remaining pointers in the list to avoid memory leaks
     if(list_of_gamepieces_.size() > 0){
         for(int i = (int) (list_of_gamepieces_.size() - 1); i >= 0; i--){
             gamescene_->removeItem(list_of_gamepieces_.at(i)->returnSelf());

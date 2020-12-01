@@ -9,7 +9,7 @@ Gamestatistics::Gamestatistics() :
 
 Gamestatistics::~Gamestatistics()
 {
-
+    srand(time(0));
 }
 
 int Gamestatistics::changeRage(int change)
@@ -20,18 +20,17 @@ int Gamestatistics::changeRage(int change)
     else {
         current_rage_ += change;
     }
-    return 160 - current_rage_/6;
+    return 160 - current_rage_/6; //rage is divided by 6 to make the rage bar last longer
 }
 
 int Gamestatistics::rageDecay()
 {
     current_rage_ -= rage_decay_amount_;
-    return 160 - current_rage_/6;
+    return 160 - current_rage_/6; //rage is divided by 6 to make the rage bar last longer
 }
 
 void Gamestatistics::doesDiseaseSpread()
 {
-    srand(time(0));
     int dead_passengers = 0;
     for (int i = 0; i < current_passengers_; ++i) {
         if ((1 + rand() % 10) < 3) {
