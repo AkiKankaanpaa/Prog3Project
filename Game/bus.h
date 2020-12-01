@@ -41,7 +41,7 @@ public:
     std::pair<int, int> determineMovement();
 
 private:
-    // current active powerup, can be none
+    // current active powerup, can and is by default NONE
     powerup current_powerup_;
 };
 

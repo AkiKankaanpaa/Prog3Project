@@ -39,6 +39,7 @@ public:
     piecetype returnPiecetype() {return piecetype_;};
 
 private:
+    // This specific Gamepiece objects piecetype)
     piecetype piecetype_;
 };
 

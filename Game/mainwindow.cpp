@@ -100,13 +100,6 @@ void MainWindow::insertCoordinates(std::string x_line)
     legal_coordinates_->insert({stoi(x), y_vec});
 }
 
-void MainWindow::insertHighscores(std::string x_line)
-{
-    std::string x = x_line.substr(0, x_line.find(":"));
-    x_line.erase(x_line.begin(), x_line.begin()+x.size()+1);
-    auto pair = std::make_pair(x, stoi(x_line));
-}
-
 void MainWindow::createGame(int chosen_difficulty)
 {
     gamescene_->addPixmap(gameimages_->at(RUNNING));

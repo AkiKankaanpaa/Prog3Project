@@ -44,7 +44,7 @@ public:
     direction returnDirection() {return current_direction_;};
 
 private:
-    // current moving direction
+    // current moving direction, default RIGHT
     direction current_direction_;
 };
 

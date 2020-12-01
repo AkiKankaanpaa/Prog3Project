@@ -17,7 +17,7 @@ class ErrorWindow : public QDialog
 
 public:
     /**
-     * @brief ErrorWindow
+     * @brief ErrorWindow: Constructor
      * @param parent: startupwindow or mainwindow
      * @param errorstring: string to be presented to the user
      */
