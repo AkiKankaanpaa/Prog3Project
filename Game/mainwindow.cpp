@@ -155,6 +155,7 @@ void MainWindow::createGame(int chosen_difficulty)
         player_->returnSelf()->setPos(40,40);
         player_->returnSelf()->setBrush(Qt::black);
     }
+    ui->powerupValue->setText("No Power Up");
     gamestats_->changePoints(-gamestats_->returnPoints());
 
     setDifficultySettings(diff);
@@ -205,6 +206,10 @@ void MainWindow::checkPedestrianCollision()
 
     std::sort(gamepieces.begin(), gamepieces.end(), std::greater<unsigned int>());
     if(player_->returnCoordinates() == gnome_->returnCoordinates()){
+        gamestats_->changePoints(7777);
+        gamestats_->changeTotalPoints(7777);
+        ui->lcdPoints->display(gamestats_->returnPoints());
+        ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
         endGame(GNOMED);
     }
     else if (gamepieces.size() > 0) {
@@ -279,6 +284,13 @@ void MainWindow::checkPedestrianCollision()
                     ui->totalPointValue->setText(QString::number(gamestats_->returnTotalPoints()));
                     int power = 1 + (rand() % 4);
                     player_->setCurrentPowerup((powerup)power);
+                    if (power == 1){
+                        ui->powerupValue->setText("Rage Decay Immunity");
+                    } else if(power == 2){
+                        ui->powerupValue->setText("Double Points");
+                    } else {
+                        ui->powerupValue->setText("Disease Immunity");
+                    }
 
                     break;
                 }

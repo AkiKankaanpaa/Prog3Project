@@ -57,7 +57,6 @@ private slots:
 private:
     void readCoordinates();
     void insertCoordinates(std::string x_line);
-    void insertHighscores(std::string x_line);
 
     int spawnGamepieces(difficulty chosen_difficulty);
 
