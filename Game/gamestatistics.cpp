@@ -17,7 +17,9 @@ int Gamestatistics::changeRage(int change)
     if ((current_rage_ + change) > 900) {
         current_rage_ = 900;
     }
-    else {
+    else if((current_rage_ + change) < 0) {
+        current_rage_ = 0;
+    } else {
         current_rage_ += change;
     }
     return 160 - current_rage_/6; //rage is divided by 6 to make the rage bar last longer

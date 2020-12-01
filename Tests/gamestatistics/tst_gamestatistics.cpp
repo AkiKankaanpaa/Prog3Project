@@ -1,8 +1,10 @@
 #include <QtTest>
 #include "gamestatistics.h"
 
-// add necessary includes here
-
+/**
+ * @brief The testgamestatistics class: contais automatic tests for class
+ * gamestatistics
+ */
 class testgamestatistics : public QObject
 {
     Q_OBJECT
@@ -26,6 +28,8 @@ private slots:
     void testStartingNewNysse();
     void testRemovingNysse();
     void testNysseLeaving();
+    void testSetGameDifficulty();
+
 };
 
 
@@ -66,6 +70,7 @@ void testgamestatistics::testChangeRagePositive()
 void testgamestatistics::testRageDecay()
 {
     Gamestatistics stats;
+    stats.setGameDifficulty(EASY);
     stats.rageDecay();
     stats.rageDecay();
     stats.rageDecay();
@@ -134,6 +139,19 @@ void testgamestatistics::testNysseLeaving()
     stats.nysseLeft();
     QCOMPARE(stats.returnLostNysses(), 4);
 }
+
+void testgamestatistics::testSetGameDifficulty()
+{
+    Gamestatistics stats;
+    stats.setGameDifficulty(EASY);
+    stats.rageDecay();
+    QCOMPARE(stats.returnRage(), 899);
+    stats.setGameDifficulty(NOT_EASY);
+    stats.rageDecay();
+    stats.rageDecay();
+    QCOMPARE(stats.returnRage(), 895);
+}
+
 
 QTEST_APPLESS_MAIN(testgamestatistics)
 
